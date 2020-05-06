@@ -1,0 +1,154 @@
+import unittest
+import math
+from validators.json_validator import *
+
+# Features to test
+from report_extract import report_pattern, split_sections, extract_value_report_as_json
+
+import pandas as pd
+import re
+
+# Load data to be processed for report extraction.
+
+# folder = '/Users/kjr/Desktop/MIMICQ/Athena/FreeTextSignalsMicrobiology'
+folder = 'Data'
+file = 'Microbiology2_conv'
+ext = 'csv'
+in_file = '{}/{}.{}'.format(folder, file, ext)
+
+# Read in the input data that will have tests created for it.
+df = pd.read_csv(in_file, sep='\t')
+
+# Replace || for LFs
+df['ValueNew'] = df['ValueNew'].apply(lambda x: x.replace("||", "\n"))
+df['CommentsNew'] = df['CommentsNew'].apply(lambda x: x.replace("||", "\n"))
+
+validator = JsonValidator()
+
+
+class TestExtractBasics(unittest.TestCase):
+
+    # def setUp(self):
+    #     self.auth = 'test'
+
+    def test_Report_Types_instance(self):
+        # Test the report types contain a particular instance (checks loaded values).
+        report_types = report_pattern.split('|')
+        self.assertTrue('Deleted' in report_types)
+        self.assertEquals(len(report_types), 17)
+
+    def test_Report_Sections_Bacterial_Antigens(self):
+        # Test the report unpacks particular report type.
+        row = df.iloc[73]
+
+        # Check row
+        self.assertEquals(row['PatientID'], 21)
+        self.assertEquals(row['ParameterID'], 12613)
+        self.assertEquals(row['Time'], '2013-10-02 18:00:00')
+
+        # Check reports
+        self.assertEquals(re.findall(report_pattern, row['ValueNew']), ['Bacterial Antigens'])
+
+        # Check sections extracted - as only one report we have one section same as Value
+        sections = split_sections(row['ValueNew'])
+        self.assertEquals(sections, [row['ValueNew']])
+
+    def test_Report_Sections_Urine_Microbiology(self):
+        # Test the report unpacks particular report type.
+        row = df.iloc[575]
+
+        # Check row
+        self.assertEquals(row['PatientID'], 38)
+        self.assertEquals(row['ParameterID'], 12613)
+        self.assertEquals(row['Time'], '2013-10-19 05:00:00')
+
+        # Check reports
+        self.assertEquals(re.findall(report_pattern, row['ValueNew']), ['URINE MICROBIOLOGY'])
+
+        # Check sections extracted - as only one report we have one section same as Value
+        sections = split_sections(row['ValueNew'])
+        sections(row['ValueNew'])
+        self.assertEquals(sections, [row['ValueNew']])
+
+    def test_Report_Sections_Multiple(self):
+        # Test the report unpacks particular report type.
+        row = df.iloc[4028]
+
+        # Check row
+        self.assertEquals(row['PatientID'], 1006)
+        self.assertEquals(row['ParameterID'], 12613)
+        self.assertEquals(row['Time'], '2014-05-02 13:30:00')
+
+        # Check reports
+        self.assertEquals(re.findall(report_pattern, row['ValueNew']),
+                          ['CEREBROSPINAL FLUID MICROBIOLOGY', 'MISCELLANEOUS MICROBIOLOGY'])
+
+        # Check sections extracted - value split into two report sections
+        sections = split_sections(row['ValueNew'])
+        self.assertEquals(sections,
+                          [
+                              "\nCEREBROSPINAL FLUID MICROBIOLOGY\n\nLab No.      :  63508-7495\nMicro No.    :  GC14M33542\n\nCollected    :  13:30  02-May-14\nWard         :  Childrens Critical Care (GCUH)\nRegistered   :  13:54  02-May-14\n\nSpecimen     :  CSF\n\nVolume       :    5.0   mL\nAppearance   :  Clear\nSupernatant  :  Colourless\n\n\nNo. of tubes :   9\n\nChemistry    :  Protein     250  mg/L    (150 - 500)\n                Glucose      3.6 mmol/L  (2.2 - 3.9)\n\n\nCell Count   :  Tube No:    5\n                WBC''s         57   x10^6/L\n                RBC''s     <     1  x10^6/L\n\n\nDifferential :  Polymorphs     0   %\n\n                Mononuclears  100  %\n                Eosinophils    0   %\n                Others         0   %\n\n\nGram Stain   :  No organisms seen\n\n\nCULTURE         No growth after 48 hrs incubation\n\n",
+                              "MISCELLANEOUS MICROBIOLOGY\n\nLab No.      :    63508-7495\n\nCollected    :    13:30  02-May-14\nWard         :    Childrens Critical Care (GCUH)\nRegistered   :    13:54  02-May-14\n\nSpecimen     :    CSF\n\n\nTest        :     Respiratory PCR\n\nThis is a miscellaneous test. Please contact the lab for the results of the above test."
+                              ])
+
+    def test_general_report_parsing(self):
+        for x in range(1):
+            row = df.iloc[27840]['ValueNew']
+            separator = "\n"
+
+            reportValue = MedicalReport(row, separator)
+
+            json = extract_value_report_as_json(row)
+            res = validator.doCheckAndReturnErrors(json[0], reportValue)
+            self.assertEqual([], res, 'Errors were found during the run')
+
+    def test_large_reports(self):
+        reportname = 'BLOOD CULTURE MICROBIOLOGY'
+        repBySize = validator.convertToSizeBasedDf(df['ValueNew'])
+        max = validator.getMaxSizeReport(repBySize, reportname)
+        min = validator.getMinSizeReport(repBySize, reportname)
+        print(min)
+        print(max)
+
+
+class TestHighLevelScenarios(unittest.TestCase):
+
+    def test_check_report_counts(self, fail=True):
+
+        sizeBasedDf = validator.convertToSizeBasedDf(df['ValueNew'])
+        # Get the counts of the reports
+        counts = sizeBasedDf.groupby(['Report'])['Report'].count()
+        print(counts)
+        errors = []
+        for index, value in counts.items():
+            if (value < 10):
+                errors.append('{0} has less than 10 results'.format(index))
+
+        if (fail):
+            self.assertEqual([], errors)
+            return None
+        else:
+            return errors
+
+    def test_check_assigned_fields(self):
+
+        reportname = 'BLOOD CULTURE MICROBIOLOGY'
+        totalStats = []
+        reportList = df['ValueNew']
+        for val in reportList:
+            if (reportname in val):
+                rep = extract_value_report_as_json(val)
+                try:
+                    if (rep[0]['report'][0] in reportname):
+                        counts = validator.getJsonFieldCounts(rep[0])
+                        # print(counts)
+                        totalStats.append(counts)
+                except:
+                    print('Cannot parse report')
+        ret = validator.getPercentageOfAssignedKeys(totalStats)
+
+        print(ret)
+
+
+if __name__ == '__main__':
+    unittest.main()

@@ -1,0 +1,1800 @@
+,ValueNew
+0,"
+BLOOD CULTURE MICROBIOLOGY
+
+Lab No.    :  60291-1169
+Micro No.  :  GC13M67471
+
+Collected  :  18:50  25-Sep-13
+Ward       :  ICU-Intensive Care Unit (GCH)
+Registered :  19:02  25-Sep-13
+
+
+
+Culture    :  No growth after 5 days incubation"
+1,"
+MICROBIOLOGY FROM SUPERFICIAL SITES
+
+Lab No.    :    60291-0254
+Micro No.  :    GC13M67511
+
+Collected  :    06:10  26-Sep-13
+Ward       :    ICU-Intensive Care Unit (GCH)
+Registered :    06:13  26-Sep-13
+
+Specimen   :    Swab Wound Left,Hand
+
+
+Cell Count :    Leucocytes     Scant
+                Erythrocytes   Nil
+                Epithelials    Nil
+
+Gram Stain :    Gram pos. cocci scant
+
+
+Culture    :    Normal skin flora scant
+                No pathogens isolated after 48 hrs
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  60291-0254
+Micro No.  :  GC13M67511
+
+Collected  :  06:10  26-Sep-13
+Ward       :  ICU-Intensive Care Unit (GCH)
+Registered :  06:13  26-Sep-13
+
+Specimen   :  Swab Wound Left,Hand
+
+MRSA Screen      : No MRSA isolated after 48hrs incubation
+
+Culture    :  Normal skin flora scant
+              No pathogens isolated after 48 hrs"
+2,"
+Lab No : 58089-5987    Micro No :            Collected  : ??:??  27-Sep-13
+                                             Registered : 12:14  27-Sep-13
+URINE MICROBIOLOGY                           Ward of Collection:  ICU~GCH
+
+Specimen : Urine
+
+
+MICROSCOPY
+Leucocytes     < 10     x10^6/L RR ( < 10 )
+Erythrocytes   < 10     x10^6/L RR ( < 10 )
+Epithelials    < 10     x10^6/L
+
+
+CULTURE     No growth"
+3,"
+CEREBROSPINAL FLUID MICROBIOLOGY
+
+Lab No.      :  60476-9432
+Micro No.    :  GC13M67823
+
+Collected    :  11:30  27-Sep-13
+Ward         :  ICU-Intensive Care Unit (GCH)
+Registered   :  12:01  27-Sep-13
+
+Specimen     :  CSF Lumbar Puncture
+Volume       :    3.5   mL
+Appearance   :  Bloodstained
+Supernatant  :  Yellow
+
+
+No. of tubes :   4
+
+Chemistry    :  Protein     2800 mg/L    (150 - 500)
+                Glucose      7.2 mmol/L  (2.2 - 3.9)
+
+Cell Count   :  Tube 1  : RBC''s 11700    x10^6/L
+                Tube 2  : RBC''s          x10^6/L
+                Tube 3  : RBC''s  8330    x10^6/L
+                Tube 1  : WBC''s          x10^6/L
+                Tube 2  : WBC''s          x10^6/L
+                Tube 3  : WBC''s   377    x10^6/L
+
+Differential :  Polymorphs    91   %
+                Mononuclears   9   %
+                Eosinophils    0   %
+                Others         0   %
+
+
+Gram Stain   :  No organisms seen
+
+
+CULTURE         No growth after 48 hrs incubation"
+4,"
+BLOOD CULTURE MICROBIOLOGY
+
+Lab No.    :  58089-6008
+Micro No.  :  GC13M67825
+
+Collected  :  12:07  27-Sep-13
+Ward       :  ICU-Intensive Care Unit (GCH)
+Registered :  12:13  27-Sep-13
+
+
+
+Positive Bottles :  1 of 2
+Growth After     :  31.0 Hours
+
+Gram Stain :  Gram pos. cocci
+
+
+Culture    :
+                                                 PEN FLU CFZ VA
+         Staphylococcus epidermidis               R   S   S   S
+
+
+
+
+
+     Antibiotic Abbreviations Guide:
+     PEN     Penicillin G               FLU     Di(Flu)cloxacillin
+                                        CFZ     Cefazolin
+                                        VA      Vancomycin
+
+Comments   :  Probable skin contaminant, unless patient has a prosthesis or
+              intravenous cannulation."
+5,"
+RESPIRATORY MICROBIOLOGY
+
+Lab No.    :  58089-5998
+Micro No.  :  GC13M67826
+
+Collected  :  12:07  27-Sep-13
+Ward       :  ICU-Intensive Care Unit (GCH)
+Registered :  12:13  27-Sep-13
+
+Specimen   :  Sputum
+
+Appearance :  Muco-purulent
+
+Gram Stain :  Leucocytes     Scant
+              Epithelials    Nil
+              Normal respiratory flora scant
+
+
+Culture    :  No growth after 48 hrs incubation"
+6,"
+CATHETER TIP MICROBIOLOGY
+
+Lab No.    :  53588-5599
+Micro No.  :  GC13M67917
+
+Collected  :  19:30  27-Sep-13
+Ward       :  ICU-Intensive Care Unit (GCH)
+Registered :  20:56  27-Sep-13
+
+Specimen   :  Tip  Central Venous
+
+Culture    :  No growth after 48 hrs incubation"
+7,"
+MICROBIOLOGY FROM SUPERFICIAL SITES
+
+Lab No.    :    61012-8264
+Micro No.  :    GC13M68222
+
+Collected  :    10:30  29-Sep-13
+Ward       :    Intensive Care Unit D4 (GCUH)
+Registered :    14:23  29-Sep-13
+
+Specimen   :    Swab Wound Right,Foot
+
+
+Cell Count :    Leucocytes     Scant
+                Epithelials    Nil
+
+Gram Stain :    No organisms seen
+
+
+Culture    :    No growth after 48 hrs incubation
+Comments   :    No Clinical Notes provided on request form."
+8,"
+MICROBIOLOGY FROM SUPERFICIAL SITES
+
+Lab No.    :    61012-8013
+Micro No.  :    GC13M68221
+
+Collected  :    10:30  29-Sep-13
+Ward       :    Gastrointestinal C2E (GCUH)
+Registered :    14:22  29-Sep-13
+
+Specimen   :    Swab Wound Left,Shin
+
+
+Cell Count :    Leucocytes     1+
+                Epithelials    Nil
+
+Gram Stain :    No organisms seen
+
+
+CULTURE :
+
+
+                        Aspergillus fumigatus scant
+     Antibiotic Abbreviations Guide:
+
+
+
+Comments   :    ? Contaminant .No Clinical Notes provided on request form."
+9,"
+MICROBIOLOGY FROM SUPERFICIAL SITES
+
+Lab No.    :    61012-8024
+Micro No.  :    GC13M68223
+
+Collected  :    10:30  29-Sep-13
+Ward       :    Intensive Care Unit D4 (GCUH)
+Registered :    14:24  29-Sep-13
+
+Specimen   :    Swab Wound Right,Ankle
+
+
+Cell Count :    Leucocytes     1+
+                Epithelials    Nil
+
+Gram Stain :    No organisms seen
+
+
+Culture    :    No growth after 48 hrs incubation
+Comments   :    No Clinical Notes provided on request form."
+10,"
+RESPIRATORY MICROBIOLOGY
+
+Lab No.    :  58711-8339
+Micro No.  :  GC13M68463
+
+Collected  :  11:30  30-Sep-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  15:05  30-Sep-13
+
+Specimen   :  Washings Bronchial (R)Lower Lobe
+
+Appearance :  Mucoid, Bloodstained
+
+Gram Stain :  Leucocytes     Scant
+              Erythrocytes   1+
+              Col.EpithelialsScant
+              Sq. EpithelialsScant
+              Normal respiratory flora scant
+
+
+Culture    :  Normal respiratory flora 1+
+              including Candida sp. scant"
+11,"
+RESPIRATORY MICROBIOLOGY
+
+Lab No.    :  58711-8348
+Micro No.  :  GC13M68462
+
+Collected  :  11:30  30-Sep-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  15:05  30-Sep-13
+
+Specimen   :  Washings Bronchial (L)Lower Lobe
+
+Appearance :  Mucoid, Bloodstained
+
+Gram Stain :  Leucocytes     1+
+              Erythrocytes   1+
+              Col.Epithelials1+
+              Sq. EpithelialsScant
+              Normal respiratory flora scant
+
+
+Culture    :  Normal respiratory flora 1+
+              No pathogens isolated after 48 hrs"
+12,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  58476-4791
+Micro No.  :  GC13M69017
+
+Collected  :  04:50  03-Oct-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  05:43  03-Oct-13
+
+Specimen   :  Swab Nose
+
+MRSA Screen      : No MRSA isolated after 48hrs incubation"
+13,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  58711-9749
+Micro No.  :  GC13M69018
+
+Collected  :  04:50  03-Oct-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  05:43  03-Oct-13
+
+Specimen   :  Swab Groin
+
+MRSA Screen      : No MRSA isolated after 48hrs incubation"
+14,"
+RESPIRATORY MICROBIOLOGY
+
+Lab No.    :  54865-1079
+Micro No.  :  GC13M67632
+
+Collected  :  13:10  25-Sep-13
+Ward       :  ICU-Intensive Care Unit (GCH)
+Registered :  13:34  25-Sep-13
+
+Specimen   :  Aspirate Tracheal
+
+Appearance :  Muco-purulent
+
+Gram Stain :  Leucocytes     3+
+              Epithelials    Nil
+              Gram neg. bacilli 3+
+              Normal respiratory flora scant
+
+
+Culture    :  Normal respiratory flora 1+
+
+                                                 AMP SXT GEN CIP
+               Enterobacter cloacae 3+                S   S   S
+Haemophilus influenzae (B-lact.NEG) 3+            S   S       S
+
+                                                 TET
+               Enterobacter cloacae 3+
+Haemophilus influenzae (B-lact.NEG) 3+            S
+
+
+     Antibiotic Abbreviations Guide:
+     AMP     Ampi(amoxy)cillin          CIP     Ciprofloxacin
+     SXT     Co-trimoxazole             TET     Tetracycline
+     GEN     Gentamicin
+
+
+
+              Isolate 1: Susceptibility to penicillins and first, second, and third
+              generation cephalosporins are not reported. Clinically this isolate
+              should be considered RESISTANT to these agents due to its ability to
+              produce broad spectrum beta-lactamase. Isolate 2::Beta-lactamase
+Comments   :  Negative.
+              taken as an indication for treatment. Results are provided in case
+              clinical assessment indicates that antibiotic therapy is necessary."
+15,"
+BLOOD CULTURE MICROBIOLOGY
+
+Lab No.    :  54865-1068
+Micro No.  :  GC13M67367
+
+Collected  :  13:15  25-Sep-13
+Ward       :  ICU-Intensive Care Unit (GCH)
+Registered :  13:36  25-Sep-13
+
+
+
+Culture    :  No growth after 5 days incubation"
+16,"
+CATHETER TIP MICROBIOLOGY
+
+Lab No.    :  60555-6914
+Micro No.  :  GC13M67486
+
+Collected  :  21:20  25-Sep-13
+Ward       :  ICU-Intensive Care Unit (GCH)
+Registered :  21:53  25-Sep-13
+
+Specimen   :  Tip  Central Venous
+
+Culture    :  No growth after 48 hrs incubation"
+17,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  58760-9384
+Micro No.  :  GC13M67937
+
+Collected  :  02:00  28-Sep-13
+Ward       :  ICU-Intensive Care Unit (GCH)
+Registered :  02:13  28-Sep-13
+
+Specimen   :  Swab Nose
+
+MRSA Screen      : No MRSA isolated after 48hrs incubation"
+18,"
+RESPIRATORY MICROBIOLOGY
+
+Lab No.    :  61657-6664
+Micro No.  :  GC13M68253
+
+Collected  :  18:30  29-Sep-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  19:57  29-Sep-13
+
+Specimen   :  Aspirate Tracheal
+
+Appearance :  Muco-purulent
+
+Gram Stain :  Leucocytes     2+
+              Epithelials    Scant
+              Normal respiratory flora scant
+
+
+Culture    :  Normal respiratory flora scant
+
+                                                 SXT GEN TIM
+    Acinetobacter baumannii complex scant         S   S   S
+
+     Antibiotic Abbreviations Guide:
+     SXT     Co-trimoxazole             TIM     Timentin
+     GEN     Gentamicin
+
+
+
+              Gram Negative enteric bacteria are frequent colonisers of the upper
+              respiratory tract of hospitalised patients.
+
+Comments   :  No Clinical Notes provided on request form."
+19,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  58782-0177
+Micro No.  :  GC13M68340
+
+Collected  :  09:00  30-Sep-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  10:42  30-Sep-13
+
+Specimen   :  Swab Rectal
+
+VRE Screen       : No VRE isolated."
+20,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  58760-9352
+Micro No.  :  GC13M67939
+
+Collected  :  02:00  28-Sep-13
+Ward       :  ICU-Intensive Care Unit (GCH)
+Registered :  02:14  28-Sep-13
+
+Specimen   :  Swab Rectal
+
+VRE Screen       : No VRE isolated."
+21,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  58760-9370
+Micro No.  :  GC13M67938
+
+Collected  :  02:00  28-Sep-13
+Ward       :  ICU-Intensive Care Unit (GCH)
+Registered :  02:14  28-Sep-13
+
+Specimen   :  Swab Groin
+
+MRSA Screen      : No MRSA isolated after 48hrs incubation"
+22,"
+Lab No : 58782-0199    Micro No :            Collected  : 09:00  30-Sep-13
+                                             Registered : 10:30  30-Sep-13
+URINE MICROBIOLOGY                           Ward of Collection:  GICU~GCUH
+
+Specimen : Urine
+
+
+MICROSCOPY
+Leucocytes     < 10     x10^6/L RR ( < 10 )
+Erythrocytes     20     x10^6/L RR ( < 10 )
+Epithelials    < 10     x10^6/L
+
+
+CULTURE     No growth"
+23,"
+MICROBIOLOGY FROM SUPERFICIAL SITES
+
+Lab No.    :    58782-0166
+Micro No.  :    GC13M68337
+
+Collected  :    09:00  30-Sep-13
+Ward       :    Intensive Care Unit D4 (GCUH)
+Registered :    10:28  30-Sep-13
+
+Specimen   :    Swab Wound Head,Site
+
+
+Cell Count :    Leucocytes     Nil
+                Epithelials    Scant
+
+Gram Stain :    No organisms seen
+
+
+Culture    :    No growth after 48 hrs incubation"
+24,"
+BLOOD CULTURE MICROBIOLOGY
+
+Lab No.    :  61012-0432
+Micro No.  :  GC13M68629
+
+Collected  :  11:30  01-Oct-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  12:11  01-Oct-13
+
+
+
+Culture    :  No growth after 5 days incubation"
+25,"
+CATHETER TIP MICROBIOLOGY
+
+Lab No.    :  58217-3461
+Micro No.  :  GC13M68684
+
+Collected  :  16:10  01-Oct-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  16:33  01-Oct-13
+
+Specimen   :  Tip Central Venous Left,Femoral
+
+Culture    :  No growth after 48 hrs incubation"
+26,"
+MICROBIOLOGY FROM SUPERFICIAL SITES
+
+Lab No.    :    58217-3452
+Micro No.  :    GC13M68685
+
+Collected  :    16:10  01-Oct-13
+Ward       :    Intensive Care Unit D4 (GCUH)
+Registered :    16:34  01-Oct-13
+
+Specimen   :    Swab  Central Venous
+
+
+Cell Count :    Leucocytes     Nil
+                Epithelials    1+
+
+Gram Stain :    No organisms seen
+
+
+Culture    :    No growth after 48 hrs incubation"
+27,"
+CEREBROSPINAL FLUID MICROBIOLOGY
+
+Lab No.      :  58031-9856
+Micro No.    :  GC13M68771
+
+Collected    :  09:55  02-Oct-13
+Ward         :  Intensive Care Unit D4 (GCUH)
+Registered   :  10:10  02-Oct-13
+
+Specimen     :  CSF Lumbar Puncture
+Volume       :    2.0   mL
+Appearance   :  Bloodstained
+Supernatant  :  Haemolysis
+
+
+No. of tubes :   4
+
+Chemistry    :  Protein     1700 mg/L    (150 - 500)
+                Glucose      7.4 mmol/L  (2.2 - 3.9)
+
+Cell Count   :  Tube 1  : RBC''s 37665    x10^6/L
+                Tube 2  : RBC''s          x10^6/L
+                Tube 3  : RBC''s 35730    x10^6/L
+                Tube 1  : WBC''s          x10^6/L
+                Tube 2  : WBC''s          x10^6/L
+                Tube 3  : WBC''s   180    x10^6/L
+
+Differential :  Polymorphs    15   %
+                Mononuclears  85   %
+                Eosinophils    0   %
+                Others         0   %
+
+
+Gram Stain   :  No organisms seen
+
+
+CULTURE         No growth after 48 hrs incubation"
+28,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  59501-1885
+Micro No.  :  GC13M69419
+
+Collected  :  08:15  04-Oct-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  12:08  04-Oct-13
+
+Specimen   :  Swab Nose
+
+MRSA Screen      : No MRSA isolated after 48hrs incubation"
+29,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  59501-1904
+Micro No.  :  GC13M69420
+
+Collected  :  08:15  04-Oct-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  12:09  04-Oct-13
+
+Specimen   :  Swab Groin
+
+MRSA Screen      : No MRSA isolated after 48hrs incubation"
+30,"
+Lab No : 61359-4617    Micro No :            Collected  : 14:30  04-Oct-13
+                                             Registered : 15:04  04-Oct-13
+URINE MICROBIOLOGY                           Ward of Collection:  GICU~GCUH
+
+Specimen : Urine Catheter Collection
+
+
+MICROSCOPY
+Leucocytes       10     x10^6/L RR ( < 10 )
+Erythrocytes     10     x10^6/L RR ( < 10 )
+Epithelials    < 10     x10^6/L
+
+
+CULTURE     No growth"
+31,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  61004-3177
+Micro No.  :  GC13M70776
+
+Collected  :  09:50  10-Oct-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  10:21  10-Oct-13
+
+Specimen   :  Swab Groin
+
+MRSA Screen      : No MRSA isolated after 48hrs incubation"
+32,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  61004-3188
+Micro No.  :  GC13M70775
+
+Collected  :  09:50  10-Oct-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  10:21  10-Oct-13
+
+Specimen   :  Swab Nose
+
+MRSA Screen      : No MRSA isolated after 48hrs incubation"
+33,"
+Lab No : 58065-0884    Micro No :            Collected  : 22:00  11-Oct-13
+                                             Registered : 01:31  12-Oct-13
+URINE MICROBIOLOGY                           Ward of Collection:  GICU~GCUH
+
+Specimen : Urine
+
+
+MICROSCOPY
+Leucocytes      200     x10^6/L RR ( < 10 )
+Erythrocytes   > 500    x10^6/L RR ( < 10 )
+Epithelials    < 10     x10^6/L
+
+
+CULTURE     No growth
+
+COMMENT:  No Clinical Notes provided on request form."
+34,"
+Lab No : 58031-2913    Micro No :            Collected  : 06:30  13-Oct-13
+                                             Registered : 07:11  13-Oct-13
+URINE MICROBIOLOGY                           Ward of Collection:  GICU~GCUH
+
+Specimen : Urine
+
+
+MICROSCOPY
+Leucocytes       20     x10^6/L RR ( < 10 )
+Erythrocytes    280     x10^6/L RR ( < 10 )
+Epithelials    <  10    x10^6/L
+
+
+CULTURE     No growth"
+35,"
+RESPIRATORY MICROBIOLOGY
+
+Lab No.    :  58031-2902
+Micro No.  :  GC13M71413
+
+Collected  :  06:30  13-Oct-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  07:12  13-Oct-13
+
+Specimen   :  Aspirate Tracheal
+
+
+Gram Stain :  Leucocytes     2+
+              Epithelials    Scant
+              No organisms seen
+
+
+Culture    :  Normal respiratory flora 1+
+
+                                                 SXT GEN
+    Acinetobacter baumannii complex scant         S   S
+
+     Antibiotic Abbreviations Guide:
+     SXT     Co-trimoxazole
+     GEN     Gentamicin"
+36,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  61660-0826
+Micro No.  :  GC13M72658
+
+Collected  :  18:00  17-Oct-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  18:32  17-Oct-13
+
+Specimen   :  Swab Groin
+
+MRSA Screen      : No MRSA isolated after 48hrs incubation"
+37,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  61660-0835
+Micro No.  :  GC13M72657
+
+Collected  :  18:00  17-Oct-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  18:31  17-Oct-13
+
+Specimen   :  Swab Nose
+
+MRSA Screen      : No MRSA isolated after 48hrs incubation"
+38,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  58711-7767
+Micro No.  :  GC13M68972
+
+Collected  :  15:00  02-Oct-13
+Ward       :  Respiratory B5N (GCUH)
+Registered :  18:47  02-Oct-13
+
+Specimen   :  Swab Groin
+
+MRSA Screen      : No MRSA isolated after 48hrs incubation"
+39,"
+BODY FLUID EXAMINATION
+
+Lab No.      :  58476-9079
+Micro No.    :  GC13M70138
+
+Collected    :  23:15  07-Oct-13
+Ward         :  Renal C3W (GCUH)
+Registered   :  01:04  08-Oct-13
+
+Specimen     :  Fluid Synovial Left,Ankle
+
+
+Volume       :    1.0  mL
+Appearance   :  Bloodstained, with a fibrin clot
+Crystals     :  No Birefringent crystals seen
+
+
+Gram Stain   :  Leucocytes 3+
+                Gram pos. cocci 3+
+
+
+
+CULTURE :
+
+                                                           PEN FLU CFZ ERY
+                        Staphylococcus aureus 3+            R   S   S   S
+
+                                                           TET
+                        Staphylococcus aureus 3+            S
+
+     Antibiotic Abbreviations Guide:
+     PEN     Penicillin G               FLU     Di(Flu)cloxacillin
+     ERY     Erythromycin               CFZ     Cefazolin
+                                        TET     Tetracycline
+
+
+Comments     :  The fluid contained clots, and is therefore unsuitable for
+                cell and differential counts."
+40,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  61636-5152
+Micro No.  :  GC13M69920
+
+Collected  :  18:35  06-Oct-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  19:16  06-Oct-13
+
+Specimen   :  Swab Groin
+
+MRSA Screen      : No MRSA isolated after 48hrs incubation"
+41,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  58476-5297
+Micro No.  :  GC13M68973
+
+Collected  :  15:00  02-Oct-13
+Ward       :  Respiratory B5N (GCUH)
+Registered :  18:48  02-Oct-13
+
+Specimen   :  Swab Rectal
+
+VRE Screen       : No VRE isolated."
+42,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  58063-1385
+Micro No.  :  GC13M71259
+
+Collected  :  04:40  12-Oct-13
+Ward       :  Respiratory B5N (GCUH)
+Registered :  04:49  12-Oct-13
+
+Specimen   :  Swab Groin
+
+MRSA Screen      : No MRSA isolated after 48hrs incubation"
+43,"
+BLOOD CULTURE MICROBIOLOGY
+
+Lab No.    :  58063-3110
+Micro No.  :  GC13M70979
+
+Collected  :  21:30  10-Oct-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  21:50  10-Oct-13
+
+
+
+Culture    :  No growth after 5 days incubation"
+44,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  58031-5829
+Micro No.  :  GC13M73652
+
+Collected  :  13:10  22-Oct-13
+Ward       :  Vascular/Neurosurg C4W (GCUH)
+Registered :  13:29  22-Oct-13
+
+Specimen   :  Swab Nose
+
+MRSA Screen      : No MRSA isolated after 48hrs incubation"
+45,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  58476-3710
+Micro No.  :  GC13M73430
+
+Collected  :  16:00  21-Oct-13
+Ward       :  Vascular/Neurosurg C4W (GCUH)
+Registered :  16:50  21-Oct-13
+
+Specimen   :  Swab Groin
+
+MRSA Screen      : No MRSA isolated after 48hrs incubation"
+46,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  58476-1021
+Micro No.  :  GC13M74772
+
+Collected  :  02:10  27-Oct-13
+Ward       :  Urol/Gyn/Head Neck C4E (GCUH)
+Registered :  02:53  27-Oct-13
+
+Specimen   :  Swab Groin
+
+MRSA Screen      : No MRSA isolated after 48hrs incubation"
+47,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  53564-2348
+Micro No.  :  GC13M77250
+
+Collected  :  18:10  05-Nov-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  08:44  06-Nov-13
+
+Specimen   :  Swab Nose
+
+MRSA Screen      : No MRSA isolated after 48hrs incubation"
+48,"
+MICROBIOLOGY FROM OPERATIVE/INVASIVE SPECIMENS
+
+Lab No.    :  58063-3836
+Micro No.  :  GC13M75220
+
+Collected  :  21:45  28-Oct-13
+Ward       :  Gastrointestinal C2E (GCUH)
+Registered :  21:47  28-Oct-13
+
+Specimen   :  Swab Abscess Anal
+
+
+
+Gram Stain :  Leucocytes     Scant
+              Epithelials    Nil
+              Gram neg. bacilli 3+
+              Gram pos. cocci 2+
+              Gram pos. bacilli scant
+
+Culture    :  Coliform scant
+              Mixed anaerobic bacteria 3+"
+49,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  53564-7653
+Micro No.  :  GC13M77663
+
+Collected  :  ??:??  07-Nov-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  11:56  07-Nov-13
+
+Specimen   :  Swab Nose
+
+MRSA Screen      : No MRSA isolated after 48hrs incubation"
+50,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  61004-3052
+Micro No.  :  GC13M70820
+
+Collected  :  10:30  10-Oct-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  10:56  10-Oct-13
+
+Specimen   :  Swab Groin
+
+MRSA Screen      : No MRSA isolated after 48hrs incubation"
+51,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  54859-7864
+Micro No.  :  GC13M78699
+
+Collected  :  16:00  11-Nov-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  19:46  11-Nov-13
+
+Specimen   :  Swab Nose
+
+MRSA Screen      : No MRSA isolated after 48hrs incubation"
+52,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  56790-5067
+Micro No.  :  GC13M78216
+
+Collected  :  16:00  09-Nov-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  21:17  09-Nov-13
+
+Specimen   :  Swab Nose
+
+MRSA Screen      : No MRSA isolated after 48hrs incubation"
+53,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  54859-1516
+Micro No.  :  GC13M79975
+
+Collected  :  21:50  16-Nov-13
+Ward       :  Respiratory B5N (GCUH)
+Registered :  02:03  17-Nov-13
+
+Specimen   :  Swab Rectal
+
+VRE Screen       : No VRE isolated."
+54,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  61012-5616
+Micro No.  :  GC13M73230
+
+Collected  :  20:30  20-Oct-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  21:56  20-Oct-13
+
+Specimen   :  Swab Groin
+
+MRSA Screen      : No MRSA isolated after 48hrs incubation"
+55,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  61660-4400
+Micro No.  :  GC13M72206
+
+Collected  :  05:45  16-Oct-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  07:18  16-Oct-13
+
+Specimen   :  Swab Groin
+
+MRSA Screen      : No MRSA isolated after 48hrs incubation"
+56,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  60952-0096
+Micro No.  :  GC13M80606
+
+Collected  :  14:30  19-Nov-13
+Ward       :  Vascular/Neurosurg C4W (GCUH)
+Registered :  15:42  19-Nov-13
+
+Specimen   :  Swab Groin
+
+MRSA Screen      : No MRSA isolated after 48hrs incubation"
+57,"
+Lab No : 62219-8768    Micro No :            Collected  : 13:17  25-Nov-13
+                                             Registered : 13:28  25-Nov-13
+URINE MICROBIOLOGY                           Ward of Collection:  GICU~GCUH
+
+Specimen : Urine Catheter Collection
+
+
+MICROSCOPY
+Leucocytes       20     x10^6/L RR ( < 10 )
+Erythrocytes   > 500    x10^6/L RR ( < 10 )
+Epithelials    < 10     x10^6/L
+
+
+CULTURE     No growth"
+58,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  61238-1133
+Micro No.  :  GC13M82299
+
+Collected  :  13:00  26-Nov-13
+Ward       :  Urol/Gyn/Head Neck C4E (GCUH)
+Registered :  13:59  26-Nov-13
+
+Specimen   :  Swab Groin
+
+MRSA Screen      : No MRSA isolated after 48hrs incubation"
+59,"
+RESPIRATORY MICROBIOLOGY
+
+Lab No.    :  59506-1272
+Micro No.  :  GC13M81867
+
+Collected  :  04:50  25-Nov-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  05:26  25-Nov-13
+
+Specimen   :  Aspirate Tracheal
+
+Appearance :  Mucoid
+
+Gram Stain :  Leucocytes     1+
+              Epithelials    Scant
+              Normal respiratory flora scant
+
+
+Culture    :  Normal respiratory flora 1+
+
+                                                 SXT GEN TIM
+    Acinetobacter baumannii complex 2+            S   S   S
+
+     Antibiotic Abbreviations Guide:
+     SXT     Co-trimoxazole             TIM     Timentin
+     GEN     Gentamicin"
+60,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  62984-8654
+Micro No.  :  GC13M83355
+
+Collected  :  18:25  30-Nov-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  21:18  30-Nov-13
+
+Specimen   :  Swab Groin
+
+MRSA Screen      : No MRSA isolated after 48hrs incubation"
+61,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  59506-6312
+Micro No.  :  GC13M83800
+
+Collected  :  19:30  02-Dec-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  20:22  02-Dec-13
+
+Specimen   :  Swab Rectal
+
+VRE Screen       : No VRE isolated."
+62,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  59498-6374
+Micro No.  :  GC13M84925
+
+Collected  :  01:00  07-Dec-13
+Ward       :  Respiratory B5N (GCUH)
+Registered :  09:19  07-Dec-13
+
+Specimen   :  Swab Groin
+
+MRSA Screen      : No MRSA isolated after 48hrs incubation"
+63,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  58476-6735
+Micro No.  :  GC13M72396
+
+Collected  :  20:00  16-Oct-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  20:23  16-Oct-13
+
+Specimen   :  Swab Groin
+
+MRSA Screen      : No MRSA isolated after 48hrs incubation"
+64,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  61643-4761
+Micro No.  :  GC13M79502
+
+Collected  :  17:45  14-Nov-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  18:39  14-Nov-13
+
+Specimen   :  Swab Groin
+
+MRSA Screen      : No MRSA isolated after 48hrs incubation"
+65,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  62219-5588
+Micro No.  :  GC13M83563
+
+Collected  :  16:30  01-Dec-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  21:30  01-Dec-13
+
+Specimen   :  Swab Rectal
+
+VRE Screen       : No VRE isolated."
+66,"
+RESPIRATORY MICROBIOLOGY
+
+Lab No.    :  58760-9266
+Micro No.  :  GC13M67873
+
+Collected  :  14:30  27-Sep-13
+Ward       :  ICU-Intensive Care Unit (GCH)
+Registered :  16:05  27-Sep-13
+
+Specimen   :  Aspirate Tracheal
+
+
+Gram Stain :  Leucocytes     3+
+              Normal respiratory flora 1+
+              Gram neg. bacilli 3+
+
+
+Culture    :  Normal respiratory flora 1+
+              including Candida sp scant
+
+                                                 GEN CAZ TIM TAZ
+                 Pseudomonas putida 2+            S   S   R   R
+
+                                                 CIP
+                 Pseudomonas putida 2+            S
+
+
+     Antibiotic Abbreviations Guide:
+     GEN     Gentamicin                 CAZ     Ceftazidime
+     CIP     Ciprofloxacin              TIM     Timentin
+                                        TAZ     Pip/Tazobactam
+
+
+              Non-standard susceptibility test performed - correlation of results
+              with clinical response is uncertain. For further comment please
+              contact medical microbiologist.
+Comments   :  The reporting of antibiotic susceptibility should not be taken as an
+              indication for treatment. Results are provided in case clinical
+              assessment indicates that antibiotic therapy is necessary."
+67,"
+MICROBIOLOGY FROM SUPERFICIAL SITES
+
+Lab No.    :    60952-6155
+Micro No.  :    GC13M81249
+
+Collected  :    00:14  22-Nov-13
+Ward       :    Intensive Care Unit D4 (GCUH)
+Registered :    01:45  22-Nov-13
+
+Specimen   :    Swab Wound Scalp
+
+
+Cell Count :    Leucocytes     Nil
+                Epithelials    Scant
+
+Gram Stain :    Gram pos. cocci 2+
+                Yeast scant
+
+
+Culture    :    Normal skin flora 1+
+
+
+                                                           PEN FLU CFZ ERY
+                        Staphylococcus aureus 2+            R   S   S   S
+
+                                                           TET
+                        Staphylococcus aureus 2+            S
+
+     Antibiotic Abbreviations Guide:
+     PEN     Penicillin G               FLU     Di(Flu)cloxacillin
+     ERY     Erythromycin               CFZ     Cefazolin
+                                        TET     Tetracycline"
+68,"
+MICROBIOLOGY FROM SUPERFICIAL SITES
+
+Lab No.    :    63360-0317
+Micro No.  :    GC13M87482
+
+Collected  :    10:00  16-Dec-13
+Ward       :    Intensive Care Unit D4 (GCUH)
+Registered :    11:57  16-Dec-13
+
+Specimen   :    Swab Wound Right,Leg
+
+
+Cell Count :    Leucocytes     Nil
+                Epithelials    Nil
+
+Gram Stain :    Gram neg. bacilli scant
+                Gram pos. cocci scant
+
+
+Culture    :    Mixed enteric bacteria and skin flora 2+
+                Enterococcus sp. scant"
+69,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  58711-7778
+Micro No.  :  GC13M68971
+
+Collected  :  15:00  02-Oct-13
+Ward       :  Respiratory B5N (GCUH)
+Registered :  18:47  02-Oct-13
+
+Specimen   :  Swab Nose
+
+MRSA Screen      : No MRSA isolated after 48hrs incubation"
+70,"
+BLOOD CULTURE MICROBIOLOGY
+
+Lab No.    :  58476-5269
+Micro No.  :  GC13M68936
+
+Collected  :  16:55  02-Oct-13
+Ward       :  Respiratory B5N (GCUH)
+Registered :  16:57  02-Oct-13
+
+
+
+Culture    :  No growth after 5 days incubation
+Comments   :  No Clinical Notes provided on request form."
+71,"
+RESPIRATORY MICROBIOLOGY
+
+Lab No.    :  58063-1330
+Micro No.  :  GC13M71257
+
+Collected  :  02:00  12-Oct-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  03:44  12-Oct-13
+
+Specimen   :  Aspirate Tracheal
+
+
+Gram Stain :  Leucocytes     3+
+              Epithelials    Scant
+              Normal respiratory flora 3+
+              Gram neg. bacilli 2+
+
+
+Culture    :  Normal respiratory flora 1+
+
+                                                 PEN FLU AMP CFZ
+                   Escherichia coli 2+                    S   S
+              Staphylococcus aureus 1+            R   S       S
+
+                                                 ERY SXT GEN TET
+                   Escherichia coli 2+                S   S
+              Staphylococcus aureus 1+            S           R
+
+
+
+
+
+
+
+     Antibiotic Abbreviations Guide:
+     PEN     Penicillin G               FLU     Di(Flu)cloxacillin
+     AMP     Ampi(amoxy)cillin          CFZ     Cefazolin
+     ERY     Erythromycin
+     SXT     Co-trimoxazole
+     TET     Tetracycline
+
+
+
+Comments   :  The reporting of antibiotic susceptibility should not be taken as an
+              indication for treatment. Results are provided in case clinical
+              assessment indicates that antibiotic therapy is necessary."
+72,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  58476-3759
+Micro No.  :  GC13M73431
+
+Collected  :  16:00  21-Oct-13
+Ward       :  Vascular/Neurosurg C4W (GCUH)
+Registered :  16:50  21-Oct-13
+
+Specimen   :  Swab Rectal
+
+VRE Screen       : No VRE isolated."
+73,"
+Bacterial Antigens
+
+Lab No.    :  54765-9816
+Micro No.  :  GC13M68967
+
+Collected  :  18:00  02-Oct-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  18:13  02-Oct-13
+
+Specimen   :  Urine
+
+              L. pneumophila 1 Antigen                          Not Detected
+              S. pneumoniae Antigen                             Not Detected
+
+Comments   :  Please Note: The Legionella urinary antigen test will only detect
+              recent infection with Legionella pneumophila serogroup 1. A negative
+              result does not exclude the possibility of infection with other
+              Legionella strains/serovars.Presumptive negative for pneumococcal
+              antigen, suggesting no current or recent pneumococcal infection.
+              However, a negative result does not rule out
+              S. pneumoniae infection since the antigen present in the sample may
+              be below
+              the detection limit of this test."
+74,"
+CATHETER TIP MICROBIOLOGY
+
+Lab No.    :  58476-9912
+Micro No.  :  GC13M70351
+
+Collected  :  00:32  08-Oct-13
+Ward       :  Dialysis High Care A3 (GCUH)
+Registered :  01:07  08-Oct-13
+
+Specimen   :  Tip Portacath
+
+Culture    :
+                                                 PEN FLU CFZ
+              Staphylococcus aureus 10-100 cfu    R   S   S
+
+     Antibiotic Abbreviations Guide:
+     PEN     Penicillin G               FLU     Di(Flu)cloxacillin
+                                        CFZ     Cefazolin
+
+
+Comments   :  > 15 cfu (pure growth) is considered significant."
+75,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  61012-5173
+Micro No.  :  GC13M73231
+
+Collected  :  20:30  20-Oct-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  21:57  20-Oct-13
+
+Specimen   :  Swab
+
+VRE Screen       : No VRE isolated."
+76,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  58476-3743
+Micro No.  :  GC13M73429
+
+Collected  :  16:00  21-Oct-13
+Ward       :  Vascular/Neurosurg C4W (GCUH)
+Registered :  16:49  21-Oct-13
+
+Specimen   :  Swab Nose
+
+MRSA Screen      : No MRSA isolated after 48hrs incubation"
+77,"
+Bacterial Antigens
+
+Lab No.    :  58063-2423
+Micro No.  :  GC13M71260
+
+Collected  :  04:40  12-Oct-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  04:49  12-Oct-13
+
+Specimen   :  Urine
+
+              S. pneumoniae Antigen                             Not Detected
+
+Comments   :  Presumptive negative for pneumococcal antigen, suggesting no current
+              or recent pneumococcal infection. However, a negative result does not
+              rule out S. pneumoniae infection since the antigen present in the
+              sample may be below the detection limit of this test."
+78,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  61012-5607
+Micro No.  :  GC13M73229
+
+Collected  :  20:30  20-Oct-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  21:56  20-Oct-13
+
+Specimen   :  Swab Nose
+
+MRSA Screen      : No MRSA isolated after 48hrs incubation"
+79,"
+BLOOD CULTURE MICROBIOLOGY
+
+Lab No.    :  54765-6643
+Micro No.  :  GC13M71591
+
+Collected  :  04:50  14-Oct-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  05:30  14-Oct-13
+
+
+
+Positive Bottles :  1 of 2
+Growth After     :  47.8 hrs
+
+Gram Stain :  Gram neg. bacilli
+
+
+Culture    :
+
+               Prevotella loescheii
+
+     Antibiotic Abbreviations Guide:"
+80,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  58063-0197
+Micro No.  :  GC13M71258
+
+Collected  :  04:40  12-Oct-13
+Ward       :  Respiratory B5N (GCUH)
+Registered :  04:48  12-Oct-13
+
+Specimen   :  Swab Nose
+
+MRSA Screen      : No MRSA isolated after 48hrs incubation"
+81,"
+RESPIRATORY MICROBIOLOGY
+
+Lab No.    :  62219-8953
+Micro No.  :  GC13M82013
+
+Collected  :  13:17  25-Nov-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  13:28  25-Nov-13
+
+Specimen   :  Aspirate Tracheal
+
+Appearance :  Mucoid
+
+Gram Stain :  Leucocytes     2+
+              Epithelials    1+
+              Normal respiratory flora 1+
+
+
+Culture    :  Normal respiratory flora 1+
+              including Candida albicans scant"
+82,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  61637-5035
+Micro No.  :  GC13M75224
+
+Collected  :  22:40  28-Oct-13
+Ward       :  Gastrointestinal C2E (GCUH)
+Registered :  23:02  28-Oct-13
+
+Specimen   :  Swab Groin
+
+MRSA Screen      : No MRSA isolated after 48hrs incubation"
+83,"
+RESPIRATORY MICROBIOLOGY
+
+Lab No.    :  61238-7313
+Micro No.  :  GC13M82456
+
+Collected  :  06:25  27-Nov-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  06:35  27-Nov-13
+
+Specimen   :  Sputum
+
+Appearance :  Mucoid
+
+Gram Stain :  Epithelials    > 25/LPF
+
+
+Culture    :  Culture not performed
+Comments   :  Microscopic examination shows many epithelial cells indicating
+              oropharyngeal contamination. Please recollect."
+84,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  53564-7649
+Micro No.  :  GC13M77665
+
+Collected  :  ??:??  07-Nov-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  11:56  07-Nov-13
+
+Specimen   :  Swab Groin
+
+MRSA Screen      : No MRSA isolated after 48hrs incubation"
+85,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  58064-3093
+Micro No.  :  GC13M70359
+
+Collected  :  16:33  08-Oct-13
+Ward       :  Gastrointestinal C2E (GCUH)
+Registered :  16:45  08-Oct-13
+
+Specimen   :  Swab Nose
+
+MRSA Screen      : No MRSA isolated after 48hrs incubation
+              Please note: A nose and groin swab are required for the exclusion of
+              MRSA."
+86,"
+RESPIRATORY MICROBIOLOGY
+
+Lab No.    :  60808-0015
+Micro No.  :  GC13M82735
+
+Collected  :  22:00  27-Nov-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  22:08  27-Nov-13
+
+Specimen   :  Aspirate Tracheal
+
+
+Gram Stain :  Leucocytes     2+
+              Epithelials    Nil
+              Normal respiratory flora scant
+
+
+Culture    :  Normal respiratory flora 3+
+
+
+                   Candida albicans 1+
+
+     Antibiotic Abbreviations Guide:"
+87,"
+MICROBIOLOGY FROM OPERATIVE/INVASIVE SPECIMENS
+
+Lab No.    :  62224-2357
+Micro No.  :  GC13M71921
+
+Collected  :  23:15  14-Oct-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  06:54  15-Oct-13
+
+Specimen   :  Tissue Retroperitoneal Left
+              40x30x30mm
+
+
+Gram Stain :  Leucocytes     2+
+              Epithelials    Scant
+              Gram neg. bacilli 3+
+              Gram pos. bacilli scant
+              Gram pos. cocci scant
+
+Culture    :  Mixed anaerobic bacteria 3+
+
+                                                 AMP CFZ SXT GEN
+                   Escherichia coli 3+            S   S   S   S
+
+                                                 CRO
+                   Escherichia coli 3+            S
+
+
+     Antibiotic Abbreviations Guide:
+     AMP     Ampi(amoxy)cillin          CFZ     Cefazolin
+     SXT     Co-trimoxazole
+     GEN     Gentamicin"
+88,"
+C difficile screening
+
+Lab No.    :  56790-7615
+Micro No.  :  GC13M77977
+
+Collected  :  14:40  08-Nov-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  15:02  08-Nov-13
+
+Specimen   :  Faeces
+
+              C difficile Screen:                     Negative"
+89,"
+MICROBIOLOGY FROM OPERATIVE/INVASIVE SPECIMENS
+
+Lab No.    :  62224-2341
+Micro No.  :  GC13M71922
+
+Collected  :  23:15  14-Oct-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  06:54  15-Oct-13
+
+Specimen   :  Tissue Peritoneal
+
+
+
+Gram Stain :  Leucocytes     2+
+              Erythrocytes   3+
+              Epithelials    Nil
+              No organisms seen
+
+Culture    :  Mixed anaerobic bacteria scant"
+90,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  61637-5049
+Micro No.  :  GC13M75223
+
+Collected  :  22:40  28-Oct-13
+Ward       :  Gastrointestinal C2E (GCUH)
+Registered :  23:02  28-Oct-13
+
+Specimen   :  Swab Nose
+
+MRSA Screen      : No MRSA isolated after 48hrs incubation"
+91,"
+BLOOD CULTURE MICROBIOLOGY
+
+Lab No.    :  61657-7446
+Micro No.  :  GC13M68076
+
+Collected  :  22:45  28-Sep-13
+Ward       :  Immunology D5N (GCUH)
+Registered :  01:49  29-Sep-13
+
+
+
+Culture    :  No growth after 5 days incubation"
+92,"
+MICROBIOLOGY FROM OPERATIVE/INVASIVE SPECIMENS
+
+Lab No.    :  58064-3828
+Micro No.  :  GC13M72228
+
+Collected  :  10:00  16-Oct-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  10:39  16-Oct-13
+
+Specimen   :  Tissue Pancreatic
+              15x10x10mm
+
+
+Gram Stain :  Leucocytes     Scant
+              Epithelials    Nil
+              No organisms seen
+
+Culture    :  Mixed anaerobic bacteria 1+
+
+                                                 AMP CFZ SXT GEN
+                   Escherichia coli 1+            S   S   S   S
+
+
+
+
+
+     Antibiotic Abbreviations Guide:
+     AMP     Ampi(amoxy)cillin          CFZ     Cefazolin
+     SXT     Co-trimoxazole
+     GEN     Gentamicin"
+93,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  58031-5815
+Micro No.  :  GC13M73653
+
+Collected  :  13:10  22-Oct-13
+Ward       :  Vascular/Neurosurg C4W (GCUH)
+Registered :  13:29  22-Oct-13
+
+Specimen   :  Swab Groin
+
+MRSA Screen      : No MRSA isolated after 48hrs incubation"
+94,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  58711-9902
+Micro No.  :  GC13M69008
+
+Collected  :  02:30  03-Oct-13
+Ward       :  Orthopaedic C3E (GCUH)
+Registered :  03:07  03-Oct-13
+
+Specimen   :  Swab Groin
+
+MRSA Screen      : No MRSA isolated after 48hrs incubation"
+95,"
+BLOOD CULTURE MICROBIOLOGY
+
+Lab No.    :  58476-6811
+Micro No.  :  GC13M72383
+
+Collected  :  17:30  16-Oct-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  17:56  16-Oct-13
+
+
+
+Culture    :  No growth after 5 days incubation
+Comments   :  No Clinical Notes provided on request form."
+96,"
+Lab No : 61657-7568    Micro No :            Collected  : 23:00  28-Sep-13
+                                             Registered : 23:19  28-Sep-13
+URINE MICROBIOLOGY                           Ward of Collection:  GICU~GCUH
+
+Specimen : Urine
+
+
+MICROSCOPY
+Leucocytes       50     x10^6/L RR ( < 10 )
+Erythrocytes     30     x10^6/L RR ( < 10 )
+Epithelials      10     x10^6/L
+
+
+CULTURE     No growth"
+97,"
+Lab No : 59502-5021    Micro No :            Collected  : 11:00  17-Oct-13
+                                             Registered : 13:10  17-Oct-13
+URINE MICROBIOLOGY                           Ward of Collection:  GICU~GCUH
+
+Specimen : Urine
+
+
+MICROSCOPY
+Leucocytes       70     x10^6/L RR ( < 10 )
+Erythrocytes     10     x10^6/L RR ( < 10 )
+Epithelials    <  10    x10^6/L
+
+
+CULTURE     No growth"
+98,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  61004-3061
+Micro No.  :  GC13M70819
+
+Collected  :  10:30  10-Oct-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  10:56  10-Oct-13
+
+Specimen   :  Swab Nose
+
+MRSA Screen      : No MRSA isolated after 48hrs incubation"
+99,"
+MULTI-RESISTANT ORGANISM SCREEN
+
+Lab No.    :  62984-8538
+Micro No.  :  GC13M83356
+
+Collected  :  18:25  30-Nov-13
+Ward       :  Intensive Care Unit D4 (GCUH)
+Registered :  21:18  30-Nov-13
+
+Specimen   :  Swab Rectal
+
+VRE Screen       : No VRE isolated."
