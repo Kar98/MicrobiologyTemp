@@ -1,5 +1,6 @@
 import json
 from MedicalReports.Cultures import Culture
+from report_extract.report_extract import extract_value_section_as_json
 import re
 
 class Report():
@@ -40,3 +41,8 @@ class Report():
             else:
                 retList.append(rgx.match(c).group(1).strip())
         return retList
+
+    def convertDataframeColToReportList(self,dataframeColumn):
+        for text in dataframeColumn:
+            pass
+            #jsonval = extract_value_report_as_json(text)[0]

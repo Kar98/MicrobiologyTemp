@@ -1,12 +1,11 @@
-from test_report_extract import *
+
 from validators.json_validator import *
 import logging
-import numpy as np
 import pandas
-from MedicalReports.Cultures import Culture
 from MedicalReports.Reports import Report
 import matplotlib.pyplot as plt
-import json
+from MedicalReports.Reporting import ReportInfo
+
 logger = logging.getLogger()
 logger.setLevel(logging.CRITICAL)
 
@@ -49,7 +48,15 @@ for rep in reportList:
             cultureDF = pandas.concat([cultureDF,appendCultureToDataframe(reportIdx,report.reportType,cultures)])
             reportIdx += 1
 
-#print(cultureDF)
+reports = []
+
+for rep in reportList:
+    jsonval = extract_value_report_as_json(rep)[0]
+    reports.append(Report(jsonval))
+
+
+info = ReportInfo()
+cultureDF = info.generateCultureDataframe(reports)
 
 dfCounts = cultureDF.groupby('culture').count().sort_index(ascending=False)
 dfCounts[dfCounts.columns[0:1]].plot(kind='barh')

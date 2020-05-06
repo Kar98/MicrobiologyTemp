@@ -6,7 +6,7 @@ class ReportTypes():
 
 class ReportInfo():
     def appendCultureToDataframe(self,currentReportIndex, reportname, cultureList):
-        cultureDF = pandas.DataFrame(columns=['reportindex', 'reportname', 'culture'])
+        cultureDF = pandas.DataFrame(columns=ReportTypes.cultureStruct)
         for culture in cultureList:
             cultureDF = cultureDF.append(
                 {'reportindex': currentReportIndex, 'reportname': reportname, 'culture': culture},
