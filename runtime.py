@@ -1,72 +1,113 @@
-
 from validators.json_validator import *
 import logging
 import pandas
-from MedicalReports.Reports import Report
+#from MedicalReports.Reports import Report
+from MedicalReports.ReportingHelpers import ReportTypes
 import matplotlib.pyplot as plt
-from MedicalReports.Reporting import ReportInfo
+from MedicalReports.ReportingHelpers import ReportInfo
 
 logger = logging.getLogger()
 logger.setLevel(logging.CRITICAL)
+pandas.set_option('display.max_rows', None)
+pandas.set_option('display.max_columns', None)
 
-jsonstr = '{"culture": {"text": "GEN TAZ CIP TIM\n             Pseudomonas aeruginosa               R   S   S   S\n\n\n\n\n\n     Antibiotic Abbreviations Guide:\n     GEN     Gentamicin                 CIP     Ciprofloxacin\n     TAZ     Pip/Tazobactam             TIM     Timentin","vals": {"Pseudomonas aeruginosa": {"resistance": {"GEN": "R","TAZ": "S","CIP": "S","TIM": "S"}}},"other": [],"abbreviations": {},"notes": "GEN Gentamicin CIP Ciprofloxacin TAZ Pip"}}'
+def loadFile():
+    file = 'Data/Microbiology2_conv.csv'
+    df = pandas.read_csv(file, sep='\t')
+    df['ValueNew'] = df['ValueNew'].apply(lambda x: x.replace("||", "\n"))
+    df['CommentsNew'] = df['CommentsNew'].apply(lambda x: x.replace("||", "\n"))
+    return df
 
-file = 'Data/Microbiology2_conv.csv'
-separator = "||"
-df = pandas.read_csv(file, sep='\t')
-separator = "\n"
-df['ValueNew'] = df['ValueNew'].apply(lambda x : x.replace("||", "\n"))
-df['CommentsNew'] = df['CommentsNew'].apply(lambda x : x.replace("||", "\n"))
+def getReport(list):
+    for l in list:
+        if l.culture.hasResistance():
+            return l
 
+df = loadFile()
+reptypes = ReportTypes().cultureStruct
 validator = JsonValidator()
 urineName = 'URINE MICROBIOLOGY'
 bloodName = 'BLOOD CULTURE MICROBIOLOGY'
 
 reportList = df['ValueNew'].head(1000)
 
-cultureDF = pandas.DataFrame(columns=['reportindex','reportname','culture'])
+cultureDF = pandas.DataFrame(columns=reptypes)
 
 reportIdx = 0
-
-# Index , ReportIndex , Reportname , Culture
-
-def appendCultureToDataframe(currentReportIndex, reportname, cultureList):
-    cultureDF = pandas.DataFrame(columns=['reportindex', 'reportname', 'culture'])
-    for culture in cultureList:
-        cultureDF = cultureDF.append(
-            {'reportindex': currentReportIndex, 'reportname': reportname, 'culture': culture},
-            ignore_index=True)
-    return cultureDF
-
-for rep in reportList:
-    jsonval = extract_value_report_as_json(rep)[0]
-    report = Report(jsonval)
-    if('error' not in report.jsonObj):
-        cultureCounts = validator.getJsonFieldCounts(report.culture.vals)
-        if(len(cultureCounts) > 0):
-            cultures = report.getCultureVals()
-            cultureDF = pandas.concat([cultureDF,appendCultureToDataframe(reportIdx,report.reportType,cultures)])
-            reportIdx += 1
-
 reports = []
 
-for rep in reportList:
-    jsonval = extract_value_report_as_json(rep)[0]
-    reports.append(Report(jsonval))
 
+#for rep in reportList:
+#    jsonval = extract_value_report_as_json(rep)[0]
+#    reports.append(Report(jsonval))
 
 info = ReportInfo()
-cultureDF = info.generateCultureDataframe(reports)
+reports = info.generateReportList(reportList)
 
-dfCounts = cultureDF.groupby('culture').count().sort_index(ascending=False)
-dfCounts[dfCounts.columns[0:1]].plot(kind='barh')
-plt.show()
-print(dfCounts[dfCounts.columns[0:1]])
-#for key, item in aaa:
-#    print(aaa.get_group(key),'\n')
+resisDF = pandas.DataFrame(columns=ReportTypes().resistanceStruct)
+resIndex = 0
+for r in reports:
+    if r.culture != None and len(r.culture.abbreviations) > 0:
+        var = r.getCultureResistance()
+        if len(var.values()) > 0:
+            resisDF = pandas.concat([resisDF,info.flattenCulturesToDataframe(resIndex,var)])
+            resIndex +=1
 
-#print(aaa)
+# Find the % of reports that have resistance - done
+#repcount = len(reports)
+#withResistanceCount = len(resisDF.groupby('resindex').count())
+#print('Total : {0} With resistance : {1} As Percentage : {2}%'.format(repcount,withResistanceCount,math.trunc(withResistanceCount / repcount * 100)))
 
-#print(aaa[aaa.columns[0:1]])
+# Get the total count of resistances per report, and compare against another dataset - done
+#print(reports[0].getCultureResistance())
+# Need TotalReports, TotalCultures, TotalCulturesWithResistance
+TotalReports = len(reports)
+TotalCultures = 0
+TotalCulturesWithResistance = 0
+
+for r in reports:
+    if r.culture is not None and len(r.culture.vals) > 0:
+        TotalCultures += 1
+        if r.culture.hasResistance():
+            print(r.jsonObj)
+            TotalCulturesWithResistance += 1
+        else:
+            print(r.jsonObj)
+            pass
+    else:
+        #print(r.jsonObj)
+        pass
+
+print(TotalReports)
+print(TotalCultures)
+print(TotalCulturesWithResistance)
+
+# Get the % of the Resistance value, and compare against the total
+
+rCount = 0
+sCount = 0
+resisCount = 0
+
+for r in reports:
+    if r.culture.hasResistance:
+        # Get dictionary of resistances
+        for key, value in r.culture.resistances.items():
+            for resistanceItem in value:
+                resisCount += 1
+                if resistanceItem.value == 'R':
+                    rCount += 1
+                elif resistanceItem.value == 'S':
+                    sCount += 1
+
+flat = pandas.DataFrame(columns=ReportTypes.reportStruct)
+index = 0
+
+for r in reports:
+    val = info.flattenReport(index, r)
+    flat = pandas.concat([flat,val])
+    flat[ReportTypes().reportStruct].to_csv('flatten.csv')
+    index += 1
+
+
 
 print('done')

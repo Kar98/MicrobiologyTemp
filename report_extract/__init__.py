@@ -5,7 +5,6 @@
 # Author: Kelvin Ross, 2019
 #
 
-
 from .report_extract import report_pattern, split_sections, extract_value_report_as_json, report_extractor_factory, text_between_patterns
 
 __all__ = ['report_pattern'
