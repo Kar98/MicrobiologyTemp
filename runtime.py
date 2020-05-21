@@ -23,6 +23,12 @@ def loadFile():
     df['CommentsNew'] = df['CommentsNew'].apply(lambda x: x.replace("||", "\n"))
     return df
 
+def readFile(filepath):
+    f = open(filepath, 'r')
+    str = f.read()
+    f.close()
+    return str
+
 def getReport(list):
     for l in list:
         if l.culture.hasResistance():
@@ -52,6 +58,13 @@ def getReportWithResis(listOfReports, match = -1):
             if(matchesFound == match):
                 return r
 
+wordFreqDic = {
+    "Hello": 56,
+    "at" : 23 ,
+    "test" : 43,
+    "this" : 43
+    }
+
 
 
 df = loadFile()
@@ -64,13 +77,16 @@ catherName = 'CATHETER TIP MICROBIOLOGY'
 bloodId = 4
 catherId = 1161
 
-reportList = df['ValueNew'].head(10000)
+reportList = df['ValueNew'].head(1000)
+ri = ReportInfo()
+#reports = ri.generateReportList(reportList)
 
-f = open('test.txt','r')
+#for r in reports:
+#    if r.culture.hasResistance():
+#        print('{0} {1}'.format(r.csvIndex,json.dumps(r.jsonObj)))
+
 tblParser = CultureParser()
-tblParser.getCulture(f.read())
-f.close()
-
-clearFile('output.txt')
+parsed = tblParser.getCulture(readFile('test.txt'))
+print(parsed)
 
 print('done')

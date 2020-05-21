@@ -124,11 +124,14 @@ class CultureParser:
     def getTextInRow(self,row):
         """Row is text. cultureRow is bool, indicates if the row is expected to have a culture"""
         # Scan through the row. If text is found, then start adding to the return value. If 2 whitespace chars are found, exit.
+        exceptionChars = ['>'] # If one of these are found, then stop
         start = True
         string = []
         for x in range(len(row)):
             char = row[x]
-            if char != ' ':
+            if char in exceptionChars:
+                return ''.join(string).strip()
+            elif char != ' ':
                 start = False
                 string.append(char)
             else:
@@ -149,16 +152,20 @@ class CultureParser:
         return ''.join(string)
 
     def isHeaderRow(self,rowtext):
-        # If all text items are 3 length and all upper then return true
-        splits = rowtext.split(' ')
-        for str in splits:
-            if len(str) != 3:
-                return False
-
-        if rowtext != rowtext.upper():
+        pattern = ' [A-Z]{2,3}'
+        matches = re.findall(pattern,rowtext)
+        if len(matches) > 0:
+            return True
+        else:
             return False
 
-        return True
+    def getHeaderRowValue(self, rowtext):
+        pattern = ' [A-Z]{2,3}'
+        matches = re.findall(pattern, rowtext)
+        output = []
+        for m in matches:
+            output.append(m.strip())
+        return ' '.join(output)
 
     def getResistanceValues(self, startHeaderPos, rowtext, headertext):
         # Row text has the culture and values on it
@@ -191,28 +198,44 @@ class CultureParser:
         expectCulture = False
         notes = []
         headerIndex = -1
-        cultures = {}
+        cultures = {'cultures': {}, 'notes': []}
         currentHeaderText = ''
+        parentStartPos = 1000  # High number to trigger first iteration
+        parentCultureName = ''
 
         rows = cultureTextBlock.split('\n')
-        tableWidth = self.getTableWidth(rows)
 
         for row in rows:
             text = self.getTextInRow(row)
-            if self.isHeaderRow(text):
+            if self.isHeaderRow(row):
                 expectCulture = True
-                headerIndex = row.index(text)
-                currentHeaderText = text
+                header = self.getHeaderRowValue(row)
+                headerIndex = row.index(header)
+                currentHeaderText = header
+            elif len(text.strip()) == 0:
+                # Newline/empty line hit, reset.
+                expectCulture = False
+                parentStartPos = 1000
             elif expectCulture:
                 # Culture is expected on this line, load into dict.
-                cultures[text] = self.getResistanceValues(headerIndex,row,currentHeaderText)
-                pass
-            elif len(text) == 0:
-                # Newline hit, reset.
-                expectCulture = False
+                if parentStartPos < row.index(text):
+                    # Then it's an indent
+                    cultures['cultures'][parentCultureName]['indentText'] = text
+                else:
+                    parentCultureName = text
+                    try:
+                        cultures['cultures'][text]
+                    except KeyError as e:
+                        cultures['cultures'][text] = {'resistances': {}}
+                    values = self.getResistanceValues(headerIndex,row,currentHeaderText)
+                    cultures['cultures'][text]['resistances'].update(values)
+                    parentStartPos = row.index(text)
+            elif text.lower() == 'culture' or text.lower() == 'culture:':
+                pass # Sometimes the header will get caught and this is to remove it.
             else:
-                notes.append(text)
+                cultures['notes'].append(text)
 
+        return cultures
 
 
 
@@ -619,90 +642,12 @@ class BloodMicrobiologyReportExtractor(MicrobiologyReportExtractor):
 class CatheterTipReportExtractor(MicrobiologyReportExtractor):
 
     def get_culture(self):
-        culture = super().get_culture()
-        # print("Culture:", culture)
+        parser = CultureParser()
+        parser.getCulture(self.text)
 
-        # Pyparser definitions used for parsing abbreviation texts
-        LF = Suppress('||')
-
-        abbrev = Word(alphas.upper(), min=2, max=3)
-        abbrev_label = Word(alphas + '/-()', min=2)
-        abbrev_tuple = Group(abbrev + abbrev_label + LF)('abbrev')
-        abbrev_list = Group(ZeroOrMore(abbrev_tuple))('abbrev_list')
-
-        header = Group(OneOrMore(abbrev))('header')
-        culture_val = Group(OneOrMore(Word(alphas + '-', min=2)))('culture')
-        resistance = Group(ZeroOrMore(Word("RS", exact=1)))('resistance')
-        row = Group(culture_val + resistance)('row')
-        # table = Group(header + OneOrMore(row))('table')
-        table = Group(header + OneOrMore(LF + row))('table')
-
-        other = Group(OneOrMore(Word(alphanums + '.-,()')))('other')
-        other_block = Group(OneOrMore(ZeroOrMore(LF) + other))('other_block')
-
-        abbrev_block = Group(abbrev_list + other_block)('abbrev_block')
-
-        culture_block = MatchFirst([table, other])
-
-        # Split culture text using abbreviation
-        abbrev_re = 'Antibiotic Abbreviations Guide\s*:\s*'
-        val_text = text_between_patterns('^', abbrev_re, culture)
-        abbrev_text = text_between_patterns(abbrev_re, '$', culture)
-
-        def get_abbrev(text):
-            s = text.replace("\n", "||")
-            # print("abbrev:", s)
-
-            if s == '':
-                return {}, ""
-
-            parsed_text = abbrev_block.parseString(s)  # .asDict()
-            abbrev = dict(parsed_text.abbrev_block.abbrev_list.asList())
-            notes_text = ' '.join(sum(parsed_text.abbrev_block.other_block.asList(), []))
-
-            # check the list matches the text, that way we will know if pattern match missed something.
-            # text_stripped = re.sub('\s+', ' ', text).strip()
-            # abbrev_stripped = ' '.join(['{} {}'.format(k,v) for (k,v) in abbrev])
-            # notes_stripped = re.sub('\s+', ' ', notes_text).strip()
-            # generated_stripped = abbrev_stripped + ((" " + notes_stripped) if notes_text != "" else "")
-            # assert text_stripped == generated_stripped, "Antibiotic Abbreviations Guide text not extracted correctly."
-
-            return dict(abbrev), notes_text
-
-        abbrev_val, notes_val = get_abbrev(abbrev_text)
-
-        # Extract culture definitions from resistance table - using parsing
-        def extract_culture_table_parse(text):
-            text = text.replace("\n", "||")
-            # print("Text:", text)
-
-            # Parse text using definitions above
-            parsed_text = culture_block.parseString(text)
-
-            antibiotics_vals = []
-            culture_vals = {}
-            other_vals = []
-
-            if parsed_text.table != '':
-                antibiotics_vals = list(parsed_text.table.header)
-                culture_val = ' '.join(list(parsed_text.table.row.culture))
-                resistance_vals = dict(zip(antibiotics_vals, parsed_text.table.row.resistance))
-                culture_vals = {culture_val: {'resistance': resistance_vals}}
-
-            if parsed_text.other != '':
-                other_vals = [' '.join(list(parsed_text.other))]
-
-            return culture_vals, other_vals
-
-        culture_val, other_val = extract_culture_table_parse(culture)
-
-        return {
-            'text': culture,
-            'vals': culture_val,
-            'other': other_val,
-            'abbreviations': abbrev_val,
-            'notes': notes_val,
-        }
+        return{
+            'asdf': 'fdsa'
+            }
 
 
 

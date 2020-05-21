@@ -32,7 +32,7 @@ class Report():
                 self.reportType = 'error'
             else:
                 self.reportType = jsondata['report'][0]
-                self.culture = CultureBlock(self.jsonObj['culture'], self.reportType)
+                self.culture = CultureBlock(self.jsonObj['culture'])
                 if(self.culture.hasResistance()):
                     self.culture.resistances = self.getCultureResistance()
 
