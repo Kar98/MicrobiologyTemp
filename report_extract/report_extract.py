@@ -9,6 +9,7 @@
 import pandas as pd
 import re
 from pyparsing import *
+from array import *
 
 import logging
 
@@ -111,6 +112,109 @@ def split_text_after_pattern(p, text):
         from_m = m.end()
         return text[:from_m].strip(), text[from_m:].strip()
 
+class CultureParser:
+
+    def getTableWidth(self,rows):
+        length = 0
+        for row in rows:
+            if len(row) > length:
+                length = len(row)
+        return length
+
+    def getTextInRow(self,row):
+        """Row is text. cultureRow is bool, indicates if the row is expected to have a culture"""
+        # Scan through the row. If text is found, then start adding to the return value. If 2 whitespace chars are found, exit.
+        start = True
+        string = []
+        for x in range(len(row)):
+            char = row[x]
+            if char != ' ':
+                start = False
+                string.append(char)
+            else:
+                # If no text found yet, ignore the whitespace handling
+                if start == False:
+                    # Do lookahead for another whitespace char
+                    try:
+                        if row[x+1] == ' ':
+                            # End hit
+                            break
+                        else:
+                            # If next char is word char, then add the whitespace to string and continue
+                            string.append(char)
+                    except IndexError:
+                        # End of line hit
+                        break
+
+        return ''.join(string)
+
+    def isHeaderRow(self,rowtext):
+        # If all text items are 3 length and all upper then return true
+        splits = rowtext.split(' ')
+        for str in splits:
+            if len(str) != 3:
+                return False
+
+        if rowtext != rowtext.upper():
+            return False
+
+        return True
+
+    def getResistanceValues(self, startHeaderPos, rowtext, headertext):
+        # Row text has the culture and values on it
+        # startHeaderPos is the index of the start position, of the header from previous row
+        # Header text is only the valid header text (no whitespace)
+        resistances = headertext.split(' ')
+        cultureResistance = {}
+        for res in resistances:
+            resIdx = headertext.index(res) + startHeaderPos
+            maxIdx = resIdx + len(res)
+            resValue = []
+            # Get the value underneath the header text
+            try:
+                for x in range(resIdx,maxIdx):
+                    resValue.append(rowtext[x])
+                cultureResistance[res] = ''.join(resValue).strip()
+            except IndexError:
+                # if the index is > length of string, no whitespace and load whatever is found
+                cultureResistance[res] = ''.join(resValue).strip()
+
+        return cultureResistance
+
+
+
+    def getCulture(self,cultureTextBlock):
+        # Split rows
+        # Scan for text in the row. If it's a header, do culture handling. If it's not add to notes
+        # Mark the start position of the culture. If the culture below is indented (+4), then it is not a culture.
+
+        expectCulture = False
+        notes = []
+        headerIndex = -1
+        cultures = {}
+        currentHeaderText = ''
+
+        rows = cultureTextBlock.split('\n')
+        tableWidth = self.getTableWidth(rows)
+
+        for row in rows:
+            text = self.getTextInRow(row)
+            if self.isHeaderRow(text):
+                expectCulture = True
+                headerIndex = row.index(text)
+                currentHeaderText = text
+            elif expectCulture:
+                # Culture is expected on this line, load into dict.
+                cultures[text] = self.getResistanceValues(headerIndex,row,currentHeaderText)
+                pass
+            elif len(text) == 0:
+                # Newline hit, reset.
+                expectCulture = False
+            else:
+                notes.append(text)
+
+
+
 
 class MicrobiologyReportExtractor:
     # Handles extracting annotations from text based microbiology reports from AusLab
@@ -120,7 +224,7 @@ class MicrobiologyReportExtractor:
 
     lab_pattern = 'Lab No\.*\s*:*\s*(\d+[-/]\d+)'
     micro_pattern = 'Micro No\.*\s*:\s*([\w\d]+)'  # Micro No.  :    GC15M30506
-    attr_pattern = '{}\s*:\s*(.*)\n'
+    attr_pattern = '{}\s*: *(.*)'
 
     section_heads_colon = [
         'Gram Stain',
@@ -198,6 +302,8 @@ class MicrobiologyReportExtractor:
         differential = self.get_section_from_text(
             'Differential\s*:\s*')  # Differential :  Polymorphs    91   %\n                Mononuclears   9   %\n                Eosinophils    0   %\n                Others         0   %\n\n\nGram Stain   :
         comments = self.get_section_from_text('(Comments|COMMENT)\s*:\s*')
+
+        tmp = self.get_ward()
 
         # Return an object with the various attributes extracted from the section
         return {
@@ -510,9 +616,97 @@ class BloodMicrobiologyReportExtractor(MicrobiologyReportExtractor):
             'notes': notes_val,
         }
 
+class CatheterTipReportExtractor(MicrobiologyReportExtractor):
+
+    def get_culture(self):
+        culture = super().get_culture()
+        # print("Culture:", culture)
+
+        # Pyparser definitions used for parsing abbreviation texts
+        LF = Suppress('||')
+
+        abbrev = Word(alphas.upper(), min=2, max=3)
+        abbrev_label = Word(alphas + '/-()', min=2)
+        abbrev_tuple = Group(abbrev + abbrev_label + LF)('abbrev')
+        abbrev_list = Group(ZeroOrMore(abbrev_tuple))('abbrev_list')
+
+        header = Group(OneOrMore(abbrev))('header')
+        culture_val = Group(OneOrMore(Word(alphas + '-', min=2)))('culture')
+        resistance = Group(ZeroOrMore(Word("RS", exact=1)))('resistance')
+        row = Group(culture_val + resistance)('row')
+        # table = Group(header + OneOrMore(row))('table')
+        table = Group(header + OneOrMore(LF + row))('table')
+
+        other = Group(OneOrMore(Word(alphanums + '.-,()')))('other')
+        other_block = Group(OneOrMore(ZeroOrMore(LF) + other))('other_block')
+
+        abbrev_block = Group(abbrev_list + other_block)('abbrev_block')
+
+        culture_block = MatchFirst([table, other])
+
+        # Split culture text using abbreviation
+        abbrev_re = 'Antibiotic Abbreviations Guide\s*:\s*'
+        val_text = text_between_patterns('^', abbrev_re, culture)
+        abbrev_text = text_between_patterns(abbrev_re, '$', culture)
+
+        def get_abbrev(text):
+            s = text.replace("\n", "||")
+            # print("abbrev:", s)
+
+            if s == '':
+                return {}, ""
+
+            parsed_text = abbrev_block.parseString(s)  # .asDict()
+            abbrev = dict(parsed_text.abbrev_block.abbrev_list.asList())
+            notes_text = ' '.join(sum(parsed_text.abbrev_block.other_block.asList(), []))
+
+            # check the list matches the text, that way we will know if pattern match missed something.
+            # text_stripped = re.sub('\s+', ' ', text).strip()
+            # abbrev_stripped = ' '.join(['{} {}'.format(k,v) for (k,v) in abbrev])
+            # notes_stripped = re.sub('\s+', ' ', notes_text).strip()
+            # generated_stripped = abbrev_stripped + ((" " + notes_stripped) if notes_text != "" else "")
+            # assert text_stripped == generated_stripped, "Antibiotic Abbreviations Guide text not extracted correctly."
+
+            return dict(abbrev), notes_text
+
+        abbrev_val, notes_val = get_abbrev(abbrev_text)
+
+        # Extract culture definitions from resistance table - using parsing
+        def extract_culture_table_parse(text):
+            text = text.replace("\n", "||")
+            # print("Text:", text)
+
+            # Parse text using definitions above
+            parsed_text = culture_block.parseString(text)
+
+            antibiotics_vals = []
+            culture_vals = {}
+            other_vals = []
+
+            if parsed_text.table != '':
+                antibiotics_vals = list(parsed_text.table.header)
+                culture_val = ' '.join(list(parsed_text.table.row.culture))
+                resistance_vals = dict(zip(antibiotics_vals, parsed_text.table.row.resistance))
+                culture_vals = {culture_val: {'resistance': resistance_vals}}
+
+            if parsed_text.other != '':
+                other_vals = [' '.join(list(parsed_text.other))]
+
+            return culture_vals, other_vals
+
+        culture_val, other_val = extract_culture_table_parse(culture)
+
+        return {
+            'text': culture,
+            'vals': culture_val,
+            'other': other_val,
+            'abbreviations': abbrev_val,
+            'notes': notes_val,
+        }
+
+
 
 class UnknownReportExtractor(MicrobiologyReportExtractor):
-
     def get_json(self):
         # Return an object with the various attributes extracted from the section
         return {
@@ -534,7 +728,8 @@ def report_extractor_factory(section):
         return UrineMicrobiologyReportExtractor(section)
     if report[0] == 'BLOOD CULTURE MICROBIOLOGY':
         return BloodMicrobiologyReportExtractor(section)
-
+    if report[0] == 'CATHETER TIP MICROBIOLOGY':
+        return CatheterTipReportExtractor(section)
     else:
         raise Exception("Unrecognized report {}.".format(report[0]))
 

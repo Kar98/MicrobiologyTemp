@@ -983,6 +983,8 @@ class TestUrineMicrobiology(unittest.TestCase):
 
         row = df.iloc[41604]
 
+        print(row)
+
 
         # Check row
         self.assertEqual(row['PatientID'], 8286)

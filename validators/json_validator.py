@@ -101,7 +101,7 @@ class JsonValidator():
 	def checkJsonAgainstReport(self,json,report):
 		for key,value in report.fields.items():
 			if(key not in self.dontMatch):
-				if(checker(value,self.getAllJsonValues(json))):
+				if(self.checker(value,self.getAllJsonValues(json))):
 					print(" '{0}' success".format(value))
 				else:
 					print(" '{0}' failed".format(value))

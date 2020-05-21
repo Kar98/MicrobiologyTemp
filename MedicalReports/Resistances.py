@@ -1,5 +1,6 @@
 
 class Resistance:
+    """Dumb class to hold information about Resistance"""
     fullname = '' # Proper name of the resistance
     abbreviation = '' # Will be 3 letters
     value = '' # Either S or R

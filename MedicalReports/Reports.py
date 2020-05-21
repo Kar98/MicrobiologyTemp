@@ -1,7 +1,7 @@
 import json
 import re
 
-from MedicalReports.Cultures import Culture
+from MedicalReports.Cultures import CultureBlock
 from MedicalReports.Resistances import Resistance
 
 
@@ -13,24 +13,29 @@ class Report():
     culture = None
     jsonObj = {}
     reportType = ''
+    invalidChars = ['?', '#'] # List of chars that will be replaced by whitespace in the Culturename
 
-    def __init__(self, jsondata):
+    csvIndex = -1 #Used for debugging purposes
+
+    def __init__(self, jsondata, csvIndex = -1):
+        self.csvIndex = csvIndex
         try:
             self.jsonObj = json.loads(jsondata.replace('\n', ''))
             if('error' in self.jsonObj):
                 self.reportType = 'error'
             else:
                 self.reportType = self.jsonObj['report']
-                self.culture = Culture(self.jsonObj['culture'])
+                self.culture = CultureBlock(self.jsonObj['culture'])
         except AttributeError:
             self.jsonObj = jsondata
             if('error' in self.jsonObj):
                 self.reportType = 'error'
             else:
                 self.reportType = jsondata['report'][0]
-                self.culture = Culture(self.jsonObj['culture'],self.reportType)
+                self.culture = CultureBlock(self.jsonObj['culture'], self.reportType)
                 if(self.culture.hasResistance()):
                     self.culture.resistances = self.getCultureResistance()
+
 
     def matchCultureName(self, cultureName):
         # Start from start of string. Will search for A-Z and () and space. Stops when it finds a character not part of the list.
@@ -57,9 +62,16 @@ class Report():
             pass
             #jsonval = extract_value_report_as_json(text)[0]
 
+    def cleanCultureName(self, name):
+        for char in self.invalidChars:
+            name = name.replace(char,' ')
+        return name
+
+
     def getCultureResistance(self):
         resistances = {}
         for culturename, cultureval in self.culture.vals.items():
+            culturename = self.cleanCultureName(culturename)
             if(len(cultureval) == 0):
                 resistances[culturename] = None
             else:
@@ -67,5 +79,10 @@ class Report():
                 for subitem,subvalue in cultureval.items():
                     for resistancekey,resistanceval in subvalue.items():
                         tmpResistanceList.append(Resistance(resistancekey,resistanceval))
-                resistances[self.matchCultureName(culturename)] = tmpResistanceList
+                try:
+                    resistances[self.matchCultureName(culturename)] = tmpResistanceList
+                except:
+                    print(culturename)
+                    print(self.jsonObj)
+                    raise
         return resistances

@@ -2,7 +2,6 @@ import pandas
 from validators.json_validator import JsonValidator
 from report_extract import extract_value_report_as_json
 from MedicalReports.Reports import Report
-from array import *
 
 class ReportTypes():
     cultureStruct = ['reportindex', 'reportname', 'culture']
@@ -16,13 +15,34 @@ class ReportInfo():
         """ Will accept a dataframe with a single column, then convert it into a list of Report objects. It will exclude
         the reports that 'error' out """
         reportList = dataframeColumn
+        idx = 0
         reports = []
         for rep in reportList:
             jsonval = extract_value_report_as_json(rep)
             for jsonreport in jsonval:
                 if 'error' not in jsonreport:
-                    reports.append(Report(jsonreport))
+                    reports.append(Report(jsonreport,idx))
+            idx += 1
         return reports
+
+    def generateLimitedReportList(self,dataframeColumn, reportType):
+        """ Will accept a dataframe with a single column, then convert it into a list of Report objects. It will exclude
+        the reports that 'error'. It will only get the reports specified in the parameter reportType """
+        reportList = dataframeColumn
+        reports = []
+        idx = 0
+        for rep in reportList:
+            if reportType in rep:
+                jsonval = extract_value_report_as_json(rep)
+                for jsonreport in jsonval:
+                    if 'error' not in jsonreport:
+                        try:
+                            reports.append(Report(jsonreport,idx))
+                        except Exception as e:
+                            print('error when creating report {0} with ex {1}'.format(idx,e))
+            idx += 1
+        return reports
+
 
     def appendCultureToDataframe(self,currentReportIndex, reportname, cultureList):
         cultureDF = pandas.DataFrame(columns=ReportTypes.cultureStruct)
