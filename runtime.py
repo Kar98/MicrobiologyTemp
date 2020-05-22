@@ -75,16 +75,17 @@ bloodName = 'BLOOD CULTURE MICROBIOLOGY'
 catherName = 'CATHETER TIP MICROBIOLOGY'
 
 bloodId = 4
-catherId = 1161
+catherId = 445
 
-reportList = df['ValueNew'].head(1200)
+reportList = df['ValueNew'].head(1000)
 ri = ReportInfo()
+
 reports = ri.generateLimitedReportList(reportList,catherName)
 print('total parsed reports {0}'.format(len(reports)))
 #reports = ri.generateReportList(reportList)
 
 for r in reports:
     if r.culture.hasCultures():
-        print('{0} {1}'.format(r.csvIndex,json.dumps(r.jsonObj)))
+        print('{0} {1}'.format(r.csvIndex,r.toJson()))
 
 print('done')

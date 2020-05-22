@@ -101,7 +101,7 @@ def text_between_patterns(p1, p2, text):
             to_m2 = m2.start()
             return remaining_text[:to_m2].rstrip().strip()
 
-
+# will match text between 2 patters and also return the initial p1 match with the remaining text
 def text_between_patterns_including_header(p1,p2,text):
     m1 = re.search(p1, text)
 
@@ -120,8 +120,8 @@ def text_between_patterns_including_header(p1,p2,text):
             return remaining_text.rstrip().strip()
         else:
             # Only return remaining up until match
-            to_m2 = m2.start()
             startText = text[m1.start():]
+            to_m2 = startText.index(m2.group(0))
             return startText[:to_m2].rstrip().strip()
 
 # Routine to split text after a pattern
@@ -152,20 +152,13 @@ class CultureEncoder(json.JSONEncoder):
 
 class CultureParser:
 
-    def getTableWidth(self,rows):
-        length = 0
-        for row in rows:
-            if len(row) > length:
-                length = len(row)
-        return length
-
-    def getTextInRow(self,row):
+    def getTextInRow(self,row, startPos = 0):
         """Row is text. cultureRow is bool, indicates if the row is expected to have a culture"""
         # Scan through the row. If text is found, then start adding to the return value. If 2 whitespace chars are found, exit.
         exceptionChars = ['>'] # If one of these are found, then stop
         start = True
         string = []
-        for x in range(len(row)):
+        for x in range(startPos,len(row)):
             char = row[x]
             if char in exceptionChars:
                 return ''.join(string).strip()
@@ -226,14 +219,6 @@ class CultureParser:
 
         return cultureResistance
 
-    def doesCultureExist(self,listofcultures,cultureName):
-        """listofculture will be a list of Culture Objects"""
-        for culture in listofcultures:
-            if culture.name == cultureName:
-                return True
-
-        return False
-
     def getCultureFromList(self,listofcultures,cultureName):
         for culture in listofcultures:
             if culture.name == cultureName:
@@ -241,18 +226,40 @@ class CultureParser:
 
         raise NotFound('Culture "{0}" does not exist'.format(cultureName))
 
-    def cleanDict(self,dictionary):
-        for key, value in dictionary.items():
-            if value is None:
-                del key[value]
+    def isAbbrev(self,row,listofabbreviations):
+        for abbr in listofabbreviations:
+            if abbr in row:
+                return True
 
-    def cultureToJson(self, culturelist):
-        jsonList = []
-        for culture in culturelist:
-            val = CultureEncoder().encode(culture)
-            jsonList.append(self.cleanDict(val))
-        return jsonList
+        return False
 
+    def parseAbbreviations(self,allrows,abbreviationList):
+        abbreviationGuide = {}
+        notes = [] # Catchall for any text found that does not match the abbreviation guide. Most likely bad user input
+        abbrStart = 0
+        rLen = len(allrows)-1
+        for x in range(0,rLen):
+            if "Antibiotic Abbreviations Guide" in allrows[x]:
+                # If abbreviation header found, then get next row and start parsing the guide
+                abbrStart = x + 1
+                break
+
+        for x in range(abbrStart,rLen):
+            # Start from the guide list
+            row = allrows[x]
+            for abbr in abbreviationList:
+                # For each abbreviation
+                try:
+                    abbrIdx = row.index(abbr) + len(abbr)
+                    matchedText = self.getTextInRow(row,abbrIdx)
+                    abbreviationGuide[abbr] = matchedText
+                except ValueError:
+                    if len(row.strip()) > 0 and not self.isAbbrev(row,abbreviationList):
+                        # If row contains text and doesn't have any abbreviations, assume it's some other text
+                        notes.append(row)
+
+        abbreviationGuide['notes'] = ';'.join(notes)
+        return abbreviationGuide
 
     def parseCulture(self, cultureTextBlock):
         # Split rows
@@ -266,18 +273,22 @@ class CultureParser:
         listofcultures = cultures['cultures']
         currentHeaderText = ''
         parentStartPos = 1000  # High number to trigger first iteration
-        parentCultureName = ''
         parentCulture = Culture('')
+        abbreviationList = []
 
         rows = cultureTextBlock.split('\n')
 
         for row in rows:
             text = self.getTextInRow(row)
-            if self.isHeaderRow(row):
+            if 'Antibiotic Abbreviations Guide' in text:
+                cultures['abbreviations'] = self.parseAbbreviations(rows,abbreviationList)
+                break
+            elif self.isHeaderRow(row):
                 expectCulture = True
                 header = self.getHeaderRowValue(row)
                 headerIndex = row.index(header)
                 currentHeaderText = header
+                abbreviationList.extend(header.split(' '))
             elif len(text.strip()) == 0:
                 # Newline/empty line hit, reset.
                 expectCulture = False
@@ -286,30 +297,25 @@ class CultureParser:
                 # Culture is expected on this line, load into obj.
                 if parentStartPos < row.index(text):
                     # Then it's an indent
-                    self.getCultureFromList(listofcultures,parentCultureName).indentItem = text
+                    self.getCultureFromList(listofcultures,parentCulture.name).indentItem = text
                 else:
-                    parentCultureName = text
+                    # Get the resistances and add them to the cultures variable
                     values = self.getResistanceValues(headerIndex, row, currentHeaderText)
                     parentStartPos = row.index(text)
-
                     try:
-                        culture = self.getCultureFromList(listofcultures,parentCultureName)
+                        culture = self.getCultureFromList(listofcultures,text)
                         culture.resistances.update(values)
                         parentCulture = culture
                     except NotFound:
-                        parentCulture = Culture(parentCultureName, values)
+                        parentCulture = Culture(text, values)
                         listofcultures.append(parentCulture)
-
             elif text.lower() == 'culture' or text.lower() == 'culture:':
                 pass # Sometimes the header will get caught and this is to remove it. Not essential but makes it cleaner
-            elif text.contains("Antibiotic Abbreviations Guide"):
-                pass
             else:
                 cultures['notes'].append(text)
 
-        return CultureEncoder().encode(cultures)
-
-
+        #return CultureEncoder().encode(cultures)
+        return cultures
 
 class MicrobiologyReportExtractor:
     # Handles extracting annotations from text based microbiology reports from AusLab
@@ -752,7 +758,8 @@ def report_extractor_factory(section):
 def extract_value_section_as_json(section):
     try:
         extractor = report_extractor_factory(section)
-        return extractor.get_json()
+        val = extractor.get_json()
+        return val
 
     except Exception as err:
         result = {

@@ -143,6 +143,16 @@ class TestExtractBasics(unittest.TestCase):
 
         print(expected)
 
+    def testAbbreviationParser(self):
+        blank_abbreviation = 'Culture    :\n\n      Coagulase Neg. Staphylococcus < 15 cfu\n\n     Antibiotic Abbreviations Guide:\n\n\n\nComments   :  Sub Galeal drain tip \nSpecimen: Tip-Drain-Head\n\n'
+        str2 = ''
+        parser = CultureParser()
+
+        f = open('test.txt','r')
+        text = f.read()
+        f.close()
+        print(parser.parseCulture(text))
+
 
 class TestHighLevelScenarios(unittest.TestCase):
 

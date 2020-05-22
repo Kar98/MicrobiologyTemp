@@ -11,6 +11,17 @@ class ReportTypes():
 class ReportInfo():
     """ Class to get information about reports. """
 
+    def generateSingleReport(self,dataframeColumn,index):
+        reportList = dataframeColumn
+        idx = 0
+        reports = []
+        jsonval = extract_value_report_as_json(reportList[index])
+        for jsonreport in jsonval:
+            if 'error' not in jsonreport:
+                reports.append(Report(jsonreport, idx))
+
+        return reports
+
     def generateReportList(self,dataframeColumn):
         """ Will accept a dataframe with a single column, then convert it into a list of Report objects. It will exclude
         the reports that 'error' out """

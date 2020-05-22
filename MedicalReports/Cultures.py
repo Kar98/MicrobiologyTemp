@@ -1,4 +1,3 @@
-import json
 
 class Culture():
 
@@ -19,13 +18,12 @@ class CultureBlock():
     cultures = [] # List of Culture objects
     notes = [] # List of strings found that did not match any particular criteria
 
-    def __init__(self, jsonStr):
-        # Do some processing.
-        # Assign values
-        jsonObj = json.loads(jsonStr)
+    def __init__(self, parsedCultureDict = None):
+        if parsedCultureDict is None:
+            return
         try:
-            self.cultures = jsonObj['cultures']
-            self.notes = jsonObj['notes']
+            self.cultures = parsedCultureDict['cultures']
+            self.notes = parsedCultureDict['notes']
         except KeyError:
             pass
 

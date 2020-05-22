@@ -1,10 +1,17 @@
 import json
 import re
 
-from MedicalReports.Cultures import CultureBlock
-from MedicalReports.Resistances import Resistance
+from MedicalReports.Cultures import CultureBlock,Culture
 
-
+class CultureEncoder(json.JSONEncoder):
+    def default(self,o):
+        if isinstance(o,Culture):
+            if o.indentItem is None:
+                return {'name':o.name,'resistances':o.resistances}
+            else:
+                return {'name': o.name, 'resistances': o.resistances, 'indent': o.indentItem}
+        else:
+            return super().default(o)
 
 class Report():
     """ Base MedicalReport that will be used as the main entry point to manipulate medical report data.
@@ -33,8 +40,9 @@ class Report():
             else:
                 self.reportType = jsondata['report'][0]
                 self.culture = CultureBlock(self.jsonObj['culture'])
-                if(self.culture.hasCultures()):
-                    self.culture.resistances = self.getCultureResistance()
+
+    def toJson(self):
+        return CultureEncoder().encode(self.jsonObj)
 
 
     def matchCultureName(self, cultureName):
@@ -48,13 +56,8 @@ class Report():
         retList = []
         if(self.culture is None):
             return []
-        for c in self.culture.vals:
-            splits = c.split(' and ')
-            if(len(splits) > 1):
-                for split in splits:
-                    retList.append(self.matchCultureName(split))
-            else:
-                retList.append(self.matchCultureName(c))
+        for c in self.culture.cultures:
+            retList.append(c.name)
         return retList
 
     def convertDataframeColToReportList(self,dataframeColumn):
@@ -69,20 +72,4 @@ class Report():
 
 
     def getCultureResistance(self):
-        resistances = {}
-        for culturename, cultureval in self.culture.vals.items():
-            culturename = self.cleanCultureName(culturename)
-            if(len(cultureval) == 0):
-                resistances[culturename] = None
-            else:
-                tmpResistanceList = []
-                for subitem,subvalue in cultureval.items():
-                    for resistancekey,resistanceval in subvalue.items():
-                        tmpResistanceList.append(Resistance(resistancekey,resistanceval))
-                try:
-                    resistances[self.matchCultureName(culturename)] = tmpResistanceList
-                except:
-                    print(culturename)
-                    print(self.jsonObj)
-                    raise
-        return resistances
+        return self.culture.cultures
