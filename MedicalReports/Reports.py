@@ -23,9 +23,11 @@ class Report():
     invalidChars = ['?', '#'] # List of chars that will be replaced by whitespace in the Culturename
 
     csvIndex = -1 #Used for debugging purposes
+    rawdata = ''
 
-    def __init__(self, jsondata, csvIndex = -1):
+    def __init__(self, jsondata, csvIndex = -1, rawdata = ''):
         self.csvIndex = csvIndex
+        self.rawdata = rawdata
         try:
             self.jsonObj = json.loads(jsondata.replace('\n', ''))
             if('error' in self.jsonObj):
@@ -43,6 +45,9 @@ class Report():
 
     def toJson(self):
         return CultureEncoder().encode(self.jsonObj)
+
+    def toJson(self,jsonObj):
+        return CultureEncoder().encode(jsonObj)
 
 
     def matchCultureName(self, cultureName):

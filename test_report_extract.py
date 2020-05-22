@@ -5,6 +5,8 @@ import json
 from report_extract.report_extract import CultureParser
 from validators.json_validator import *
 
+from MedicalReports.Cultures import Culture
+
 # Features to test
 from report_extract import report_pattern, split_sections, extract_value_report_as_json
 
@@ -27,6 +29,17 @@ df['ValueNew'] = df['ValueNew'].apply(lambda x: x.replace("||", "\n"))
 df['CommentsNew'] = df['CommentsNew'].apply(lambda x: x.replace("||", "\n"))
 
 validator = JsonValidator()
+
+class CultureEncoder(json.JSONEncoder):
+    def default(self,o):
+        if isinstance(o,Culture):
+            if o.indentItem is None:
+                return {'name':o.name,'resistances':o.resistances}
+            else:
+                return {'name': o.name, 'resistances': o.resistances, 'indent': o.indentItem}
+        else:
+            return super().default(o)
+
 
 
 class TestExtractBasics(unittest.TestCase):
@@ -122,23 +135,30 @@ class TestExtractBasics(unittest.TestCase):
         r_inlineheader = '{"cultures": [{"name": "Escherichia coli", "resistances": {"AMP": "S", "CFZ": "S", "TMP": "S", "NIT": "S", "GEN": "S"}}], "notes": []}'
         s_indent_multiline_multires = 'Culture    :\n                                                       PEN FLU AMP AUG\n                   Staphylococcus aureus 3+             R   S\n                   Klebsiella pneumoniae 1+                     R   S\n                        Candida albicans scant\n\n                                                       CFZ ERY SXT GEN\n                   Staphylococcus aureus 3+             S   S   S\n                   Klebsiella pneumoniae 1+             S       S   S\n                        Candida albicans scant\n\n                                                       TET\n                   Staphylococcus aureus 3+             S\n                   Klebsiella pneumoniae 1+\n                        Candida albicans scant\n\n\n'
         r_indent_multiline_multires = '{"cultures": [{"name": "Staphylococcus aureus 3+", "resistances": {"PEN": "R", "FLU": "S", "AMP": "", "AUG": "", "CFZ": "S", "ERY": "S", "SXT": "S", "GEN": "", "TET": "S"}}, {"name": "Klebsiella pneumoniae 1+", "resistances": {"PEN": "", "FLU": "", "AMP": "R", "AUG": "S", "CFZ": "S", "ERY": "", "SXT": "S", "GEN": "S", "TET": ""}, "indent": "Candida albicans scant"}], "notes": []}'
+        s_inline_notes = 'Culture      :      No growth after 5 days incubation'
+        r_inline_notes = '{"cultures": [], "notes": ["No growth after 5 days incubation"]}'
+
 
         parser = CultureParser()
 
-        expected = json.loads(r_basic)
-        actual = json.loads(parser.parseCulture(s_basic))
+        expected = r_inline_notes
+        actual = CultureEncoder().encode(parser.parseCulture(s_inline_notes))
+        self.assertEqual(actual, expected)
+
+        expected = r_basic
+        actual = CultureEncoder().encode(parser.parseCulture(s_basic))
         self.assertEqual(actual,expected)
 
-        expected = json.loads(r_gt_character)
-        actual = json.loads(parser.parseCulture(s_gt_character))
+        expected = r_gt_character
+        actual = CultureEncoder().encode(parser.parseCulture(s_gt_character))
         self.assertEqual(expected,actual)
 
-        expected = json.loads(r_inlineheader)
-        actual = json.loads(parser.parseCulture(s_inlineheader))
+        expected = r_inlineheader
+        actual = CultureEncoder().encode(parser.parseCulture(s_inlineheader))
         self.assertEqual(expected,actual)
 
-        expected = json.loads(r_indent_multiline_multires)
-        actual = json.loads(parser.parseCulture(s_indent_multiline_multires))
+        expected = r_indent_multiline_multires
+        actual = CultureEncoder().encode(parser.parseCulture(s_indent_multiline_multires))
         self.assertEqual(expected,actual)
 
         print(expected)
@@ -152,7 +172,6 @@ class TestExtractBasics(unittest.TestCase):
         text = f.read()
         f.close()
         print(parser.parseCulture(text))
-
 
 class TestHighLevelScenarios(unittest.TestCase):
 
@@ -174,7 +193,6 @@ class TestHighLevelScenarios(unittest.TestCase):
             return errors
 
     def test_check_assigned_fields(self):
-
         reportname = 'BLOOD CULTURE MICROBIOLOGY'
         totalStats = []
         reportList = df['ValueNew']

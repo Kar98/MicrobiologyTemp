@@ -33,3 +33,9 @@ class CultureBlock():
             return True
         else:
             return False
+
+    def hasNotes(self):
+        if len(self.notes) > 0:
+            return True
+        else:
+            return False

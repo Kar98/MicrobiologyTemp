@@ -14,13 +14,14 @@ class ReportInfo():
     def generateSingleReport(self,dataframeColumn,index):
         reportList = dataframeColumn
         idx = 0
-        reports = []
-        jsonval = extract_value_report_as_json(reportList[index])
+
+        val = reportList[index]
+        jsonval = extract_value_report_as_json(val)
         for jsonreport in jsonval:
             if 'error' not in jsonreport:
-                reports.append(Report(jsonreport, idx))
+                return Report(jsonreport, idx)
 
-        return reports
+
 
     def generateReportList(self,dataframeColumn):
         """ Will accept a dataframe with a single column, then convert it into a list of Report objects. It will exclude
@@ -42,13 +43,17 @@ class ReportInfo():
         reportList = dataframeColumn
         reports = []
         idx = 0
+
+        expectedReportWithCulture = 0
         for rep in reportList:
             if reportType in rep:
+                if 'Antibiotic Abbreviations Guide' in rep:
+                    expectedReportWithCulture += 1 # For debuggin
                 jsonval = extract_value_report_as_json(rep)
                 for jsonreport in jsonval:
                     if 'error' not in jsonreport:
                         try:
-                            reports.append(Report(jsonreport,idx))
+                            reports.append(Report(jsonreport,idx,rep))
                         except Exception as e:
                             print('error when creating report {0} with ex {1}'.format(idx,e))
             idx += 1

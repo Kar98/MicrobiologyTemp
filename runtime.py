@@ -77,15 +77,33 @@ catherName = 'CATHETER TIP MICROBIOLOGY'
 bloodId = 4
 catherId = 445
 
-reportList = df['ValueNew'].head(1000)
+reportList = df['ValueNew'].head(10000)
+tmp = reportList[0]
 ri = ReportInfo()
 
-reports = ri.generateLimitedReportList(reportList,catherName)
+#print(ri.generateSingleReport(reportList,79).toJson())
+
+
+
+reports = ri.generateLimitedReportList(reportList,bloodName)
 print('total parsed reports {0}'.format(len(reports)))
 #reports = ri.generateReportList(reportList)
 
-for r in reports:
-    if r.culture.hasCultures():
-        print('{0} {1}'.format(r.csvIndex,r.toJson()))
+clearFile('myjson.txt')
+clearFile('myraw.txt')
+clearFile('jsonoutput.txt')
+
+written = False
+with open('jsonoutput.txt','a') as f:
+    for r in reports:
+        if 'No growth' in r.culture.notes:
+            if written == False:
+                writeFile('myjson.txt',r.toJson())
+                writeFile('myraw.txt',r.rawdata)
+                written = True
+
+        f.write('{0}\n'.format(r.toJson()))
+
+
 
 print('done')

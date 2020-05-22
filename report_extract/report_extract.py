@@ -117,7 +117,7 @@ def text_between_patterns_including_header(p1,p2,text):
         if not (m2):
             # No p2 match found in remaining
             startText = text[m1.start():]
-            return remaining_text.rstrip().strip()
+            return startText
         else:
             # Only return remaining up until match
             startText = text[m1.start():]
@@ -139,16 +139,6 @@ def split_text_after_pattern(p, text):
 class NotFound(Exception):
     def __init__(self,message):
         self.message = message
-
-class CultureEncoder(json.JSONEncoder):
-    def default(self,o):
-        if isinstance(o,Culture):
-            if o.indentItem is None:
-                return {'name':o.name,'resistances':o.resistances}
-            else:
-                return {'name': o.name, 'resistances': o.resistances, 'indent': o.indentItem}
-        else:
-            return super().default(o)
 
 class CultureParser:
 
@@ -237,7 +227,7 @@ class CultureParser:
         abbreviationGuide = {}
         notes = [] # Catchall for any text found that does not match the abbreviation guide. Most likely bad user input
         abbrStart = 0
-        rLen = len(allrows)-1
+        rLen = len(allrows)
         for x in range(0,rLen):
             if "Antibiotic Abbreviations Guide" in allrows[x]:
                 # If abbreviation header found, then get next row and start parsing the guide
@@ -289,7 +279,7 @@ class CultureParser:
                 headerIndex = row.index(header)
                 currentHeaderText = header
                 abbreviationList.extend(header.split(' '))
-            elif len(text.strip()) == 0:
+            elif len(row.strip()) == 0:
                 # Newline/empty line hit, reset.
                 expectCulture = False
                 parentStartPos = 1000
@@ -309,10 +299,16 @@ class CultureParser:
                     except NotFound:
                         parentCulture = Culture(text, values)
                         listofcultures.append(parentCulture)
-            elif text.lower() == 'culture' or text.lower() == 'culture:':
-                pass # Sometimes the header will get caught and this is to remove it. Not essential but makes it cleaner
             else:
-                cultures['notes'].append(text)
+                # If no culture expected and it's not a header, we can safely try to trim off the Culture field
+                pattern = 'Culture\s*:?'
+                m1 = re.match(pattern,row)
+                if m1 is not None:
+                    text = self.getTextInRow(row[m1.end():])
+                else:
+                    text = self.getTextInRow(row)
+                if len(text) > 0:
+                    cultures['notes'].append(text)
 
         #return CultureEncoder().encode(cultures)
         return cultures
@@ -510,94 +506,10 @@ class UrineMicrobiologyReportExtractor(MicrobiologyReportExtractor):
         }
 
     def get_culture(self):
-        culture = super().get_culture()
-        # print("Culture:", culture)
+        culturetext = super().get_culture_with_header()
+        parser = CultureParser()
 
-        # Split culture text using abbreviation
-        abbrev_re = 'Antibiotic Abbreviations Guide\s*:\s*'
-
-        val_text = text_between_patterns('^', abbrev_re, culture)
-        abbrev_text = text_between_patterns(abbrev_re, '$', culture)
-
-        def get_abbrev(text):
-            abbrev_acronym = '[A-Z]{2,3}'
-            abbrev_label = '[A-Za-z/\(\)]+'
-            abbrev_re = '({})\s+({})'.format(abbrev_acronym, abbrev_label)
-            split_re = '{}\s+{}\n\n\n'.format(abbrev_acronym, abbrev_label)
-
-            # Split between the abbreviations and notes.  Notes are anything after the last abbreviation
-            abbrev_text, notes_text = split_text_after_pattern(split_re, text)
-
-            # List of matches
-            abbrev = re.findall(abbrev_re, abbrev_text)
-
-            # check the list matches the text, that way we will know if pattern match missed something.
-            text_stripped = re.sub('\s+', ' ', text).strip()
-            abbrev_stripped = ' '.join(['{} {}'.format(k, v) for (k, v) in abbrev])
-            notes_stripped = re.sub('\s+', ' ', notes_text).strip()
-            generated_stripped = abbrev_stripped + ((" " + notes_stripped) if notes_text != "" else "")
-            # assert text_stripped == generated_stripped, "Antibiotic Abbreviations Guide text not extracted correctly."
-
-            return dict(abbrev), notes_text
-
-        abbrev_val, notes_val = get_abbrev(abbrev_text)
-
-        # For the culture table, work out what type each line is
-        def culture_line_type(line):
-            if line == '':
-                return {'type': 'empty'}
-
-            # Header line contains 2 or 3 letter acronyms
-            header_re = re.compile("^(\s*[A-Z]{2,3})+$")
-            if header_re.match(line):
-                cols = re.findall("([A-Z]{2,3})", line)
-                return {'type': 'header', 'cols': cols}
-
-            # Row line is a culture followed by resistance values R | S
-            row_re = re.compile("^\s*.*/L")
-            m = row_re.match(line)
-            # row = re.findall("^\s*(.*/L)\s+([RS]\s*)*?$", line)
-            if m:
-                return {'type': 'row', 'culture': line[:m.end()].strip(), 'resistance': line[m.end():].strip()}
-
-            return {'type': 'unknown', 'text': line}
-
-        # Extract culture definitions from resistance table
-        def extract_culture_table(s):
-            lines = s.split('\n')
-
-            antibiotics = []
-            cultures = {}
-            other = []
-            for line in lines:
-                lt = culture_line_type(line)
-
-                if lt['type'] == 'header':
-                    antibiotics = lt['cols']
-
-                if lt['type'] == 'row':
-                    resistance = dict(zip(antibiotics, re.findall("[RS]", lt['resistance'])))
-
-                    if lt['culture'] not in cultures.keys():
-                        cultures[lt['culture']] = {'resistance': resistance}
-                    else:
-                        resistance.update(cultures[lt['culture']]['resistance'])
-                        cultures[lt['culture']] = {'resistance': resistance}
-
-                if lt['type'] == 'unknown':
-                    other.append(lt['text'])
-
-            return cultures, other
-
-        culture_val, other_val = extract_culture_table(val_text)
-
-        return {
-            'text': culture,
-            'vals': culture_val,
-            'other': other_val,
-            'abbreviations': abbrev_val,
-            'notes': notes_val,
-        }
+        return parser.parseCulture(culturetext)
 
     def get_json(self):
         json = super().get_json()
@@ -633,90 +545,10 @@ class UrineMicrobiologyReportExtractor(MicrobiologyReportExtractor):
 class BloodMicrobiologyReportExtractor(MicrobiologyReportExtractor):
 
     def get_culture(self):
-        culture = super().get_culture()
-        # print("Culture:", culture)
+        culturetext = super().get_culture_with_header()
+        parser = CultureParser()
 
-        # Pyparser definitions used for parsing abbreviation texts
-        LF = Suppress('||')
-
-        abbrev = Word(alphas.upper(), min=2, max=3)
-        abbrev_label = Word(alphas + '/-()', min=2)
-        abbrev_tuple = Group(abbrev + abbrev_label + LF)('abbrev')
-        abbrev_list = Group(ZeroOrMore(abbrev_tuple))('abbrev_list')
-
-        header = Group(OneOrMore(abbrev))('header')
-        culture_val = Group(OneOrMore(Word(alphas + '-', min=2)))('culture')
-        resistance = Group(ZeroOrMore(Word("RS", exact=1)))('resistance')
-        row = Group(culture_val + resistance)('row')
-        # table = Group(header + OneOrMore(row))('table')
-        table = Group(header + OneOrMore(LF + row))('table')
-
-        other = Group(OneOrMore(Word(alphanums + '.-,()')))('other')
-        other_block = Group(OneOrMore(ZeroOrMore(LF) + other))('other_block')
-
-        abbrev_block = Group(abbrev_list + other_block)('abbrev_block')
-
-        culture_block = MatchFirst([table, other])
-
-        # Split culture text using abbreviation
-        abbrev_re = 'Antibiotic Abbreviations Guide\s*:\s*'
-        val_text = text_between_patterns('^', abbrev_re, culture)
-        abbrev_text = text_between_patterns(abbrev_re, '$', culture)
-
-        def get_abbrev(text):
-            s = text.replace("\n", "||")
-            # print("abbrev:", s)
-
-            if s == '':
-                return {}, ""
-
-            parsed_text = abbrev_block.parseString(s)  # .asDict()
-            abbrev = dict(parsed_text.abbrev_block.abbrev_list.asList())
-            notes_text = ' '.join(sum(parsed_text.abbrev_block.other_block.asList(), []))
-
-            # check the list matches the text, that way we will know if pattern match missed something.
-            # text_stripped = re.sub('\s+', ' ', text).strip()
-            # abbrev_stripped = ' '.join(['{} {}'.format(k,v) for (k,v) in abbrev])
-            # notes_stripped = re.sub('\s+', ' ', notes_text).strip()
-            # generated_stripped = abbrev_stripped + ((" " + notes_stripped) if notes_text != "" else "")
-            # assert text_stripped == generated_stripped, "Antibiotic Abbreviations Guide text not extracted correctly."
-
-            return dict(abbrev), notes_text
-
-        abbrev_val, notes_val = get_abbrev(abbrev_text)
-
-        # Extract culture definitions from resistance table - using parsing
-        def extract_culture_table_parse(text):
-            text = text.replace("\n", "||")
-            # print("Text:", text)
-
-            # Parse text using definitions above
-            parsed_text = culture_block.parseString(text)
-
-            antibiotics_vals = []
-            culture_vals = {}
-            other_vals = []
-
-            if parsed_text.table != '':
-                antibiotics_vals = list(parsed_text.table.header)
-                culture_val = ' '.join(list(parsed_text.table.row.culture))
-                resistance_vals = dict(zip(antibiotics_vals, parsed_text.table.row.resistance))
-                culture_vals = {culture_val: {'resistance': resistance_vals}}
-
-            if parsed_text.other != '':
-                other_vals = [' '.join(list(parsed_text.other))]
-
-            return culture_vals, other_vals
-
-        culture_val, other_val = extract_culture_table_parse(culture)
-
-        return {
-            'text': culture,
-            'vals': culture_val,
-            'other': other_val,
-            'abbreviations': abbrev_val,
-            'notes': notes_val,
-        }
+        return parser.parseCulture(culturetext)
 
 class CatheterTipReportExtractor(MicrobiologyReportExtractor):
 
