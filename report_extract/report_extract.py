@@ -8,8 +8,10 @@
 
 import pandas as pd
 import re
+import json
 from pyparsing import *
 from array import *
+from MedicalReports.Cultures import Culture
 
 import logging
 
@@ -100,6 +102,28 @@ def text_between_patterns(p1, p2, text):
             return remaining_text[:to_m2].rstrip().strip()
 
 
+def text_between_patterns_including_header(p1,p2,text):
+    m1 = re.search(p1, text)
+
+    if not (m1):
+        # No p1 match found in text
+        return ""
+    else:
+        # Start match found
+        from_m1 = m1.end()
+        remaining_text = text[from_m1:]
+
+        m2 = re.search(p2, remaining_text)
+        if not (m2):
+            # No p2 match found in remaining
+            startText = text[m1.start():]
+            return remaining_text.rstrip().strip()
+        else:
+            # Only return remaining up until match
+            to_m2 = m2.start()
+            startText = text[m1.start():]
+            return startText[:to_m2].rstrip().strip()
+
 # Routine to split text after a pattern
 def split_text_after_pattern(p, text):
     m = re.search(p, text)
@@ -111,6 +135,20 @@ def split_text_after_pattern(p, text):
         # Start match found
         from_m = m.end()
         return text[:from_m].strip(), text[from_m:].strip()
+
+class NotFound(Exception):
+    def __init__(self,message):
+        self.message = message
+
+class CultureEncoder(json.JSONEncoder):
+    def default(self,o):
+        if isinstance(o,Culture):
+            if o.indentItem is None:
+                return {'name':o.name,'resistances':o.resistances}
+            else:
+                return {'name': o.name, 'resistances': o.resistances, 'indent': o.indentItem}
+        else:
+            return super().default(o)
 
 class CultureParser:
 
@@ -188,9 +226,35 @@ class CultureParser:
 
         return cultureResistance
 
+    def doesCultureExist(self,listofcultures,cultureName):
+        """listofculture will be a list of Culture Objects"""
+        for culture in listofcultures:
+            if culture.name == cultureName:
+                return True
+
+        return False
+
+    def getCultureFromList(self,listofcultures,cultureName):
+        for culture in listofcultures:
+            if culture.name == cultureName:
+                return culture
+
+        raise NotFound('Culture "{0}" does not exist'.format(cultureName))
+
+    def cleanDict(self,dictionary):
+        for key, value in dictionary.items():
+            if value is None:
+                del key[value]
+
+    def cultureToJson(self, culturelist):
+        jsonList = []
+        for culture in culturelist:
+            val = CultureEncoder().encode(culture)
+            jsonList.append(self.cleanDict(val))
+        return jsonList
 
 
-    def getCulture(self,cultureTextBlock):
+    def parseCulture(self, cultureTextBlock):
         # Split rows
         # Scan for text in the row. If it's a header, do culture handling. If it's not add to notes
         # Mark the start position of the culture. If the culture below is indented (+4), then it is not a culture.
@@ -198,10 +262,12 @@ class CultureParser:
         expectCulture = False
         notes = []
         headerIndex = -1
-        cultures = {'cultures': {}, 'notes': []}
+        cultures = {'cultures': [], 'notes': []}
+        listofcultures = cultures['cultures']
         currentHeaderText = ''
         parentStartPos = 1000  # High number to trigger first iteration
         parentCultureName = ''
+        parentCulture = Culture('')
 
         rows = cultureTextBlock.split('\n')
 
@@ -217,25 +283,31 @@ class CultureParser:
                 expectCulture = False
                 parentStartPos = 1000
             elif expectCulture:
-                # Culture is expected on this line, load into dict.
+                # Culture is expected on this line, load into obj.
                 if parentStartPos < row.index(text):
                     # Then it's an indent
-                    cultures['cultures'][parentCultureName]['indentText'] = text
+                    self.getCultureFromList(listofcultures,parentCultureName).indentItem = text
                 else:
                     parentCultureName = text
-                    try:
-                        cultures['cultures'][text]
-                    except KeyError as e:
-                        cultures['cultures'][text] = {'resistances': {}}
-                    values = self.getResistanceValues(headerIndex,row,currentHeaderText)
-                    cultures['cultures'][text]['resistances'].update(values)
+                    values = self.getResistanceValues(headerIndex, row, currentHeaderText)
                     parentStartPos = row.index(text)
+
+                    try:
+                        culture = self.getCultureFromList(listofcultures,parentCultureName)
+                        culture.resistances.update(values)
+                        parentCulture = culture
+                    except NotFound:
+                        parentCulture = Culture(parentCultureName, values)
+                        listofcultures.append(parentCulture)
+
             elif text.lower() == 'culture' or text.lower() == 'culture:':
-                pass # Sometimes the header will get caught and this is to remove it.
+                pass # Sometimes the header will get caught and this is to remove it. Not essential but makes it cleaner
+            elif text.contains("Antibiotic Abbreviations Guide"):
+                pass
             else:
                 cultures['notes'].append(text)
 
-        return cultures
+        return CultureEncoder().encode(cultures)
 
 
 
@@ -298,6 +370,9 @@ class MicrobiologyReportExtractor:
 
     def get_culture(self): return self.get_section_from_text('(Culture\s*:\s*|^CULTURE|\nCULTURE\s+|CULTURE\s*:\s*)')
 
+    def get_culture_with_header(self):
+        return text_between_patterns_including_header('(Culture\s*:\s*|^CULTURE|\nCULTURE\s+|CULTURE\s*:\s*)', self.next_section_re, self.text)
+
     def get_ward(self):
         return re.findall(self.attr_pattern.format('Ward'),
                           self.text)  # Ward         :    Urol/Gyn/Head Neck C4E (GCUH)
@@ -357,7 +432,6 @@ class MicrobiologyReportExtractor:
     def print_json(self):
         json_report = self.get_json()
         print(json.dumps(json_report, indent=2))
-
 
 class UrineMicrobiologyReportExtractor(MicrobiologyReportExtractor):
 
@@ -550,7 +624,6 @@ class UrineMicrobiologyReportExtractor(MicrobiologyReportExtractor):
 
         return json
 
-
 class BloodMicrobiologyReportExtractor(MicrobiologyReportExtractor):
 
     def get_culture(self):
@@ -642,14 +715,10 @@ class BloodMicrobiologyReportExtractor(MicrobiologyReportExtractor):
 class CatheterTipReportExtractor(MicrobiologyReportExtractor):
 
     def get_culture(self):
+        culturetext = super().get_culture_with_header()
         parser = CultureParser()
-        parser.getCulture(self.text)
 
-        return{
-            'asdf': 'fdsa'
-            }
-
-
+        return parser.parseCulture(culturetext)
 
 class UnknownReportExtractor(MicrobiologyReportExtractor):
     def get_json(self):

@@ -115,29 +115,33 @@ class TestExtractBasics(unittest.TestCase):
 
     def testCultureParser(self):
         s_basic = 'Culture    :\n                                                 PEN FLU CFZ VA\n         Staphylococcus epidermidis               R   S   S   S'
-        r_basic = '{"cultures": {"Staphylococcus epidermidis": {"resistances": {"PEN": "R", "FLU": "S", "CFZ": "S", "VA": "S"}}}, "notes": []}'
+        r_basic = '{"cultures": [{"name": "Staphylococcus epidermidis", "resistances": {"PEN": "R", "FLU": "S", "CFZ": "S", "VA": "S"}}], "notes": []}'
         s_gt_character = 'Culture    :\n                                                 SXT GEN TIM CIP\n    Acinetobacter baumannii complex >= 15 cfu     S   S   S   S\n\n                                                 MER\n    Acinetobacter baumannii complex >= 15 cfu     S\n\n'
-        r_gt_character = '{"cultures": {"Acinetobacter baumannii complex": {"resistances": {"SXT": "S", "GEN": "S", "TIM": "S", "CIP": "S", "MER": "S"}}}, "notes": []}'
+        r_gt_character = '{"cultures": [{"name": "Acinetobacter baumannii complex", "resistances": {"SXT": "S", "GEN": "S", "TIM": "S", "CIP": "S", "MER": "S"}}], "notes": []}'
         s_inlineheader = 'CULTURE:                                                   AMP CFZ TMP NIT\n                             Escherichia coli > 10^8/L      S   S   S   S\n\n                                                           GEN\n                             Escherichia coli > 10^8/L      S\n\n\n'
-        r_inlineheader = '{"cultures": {"Escherichia coli": {"resistances": {"AMP": "S", "CFZ": "S", "TMP": "S", "NIT": "S", "GEN": "S"}}}, "notes": []}'
+        r_inlineheader = '{"cultures": [{"name": "Escherichia coli", "resistances": {"AMP": "S", "CFZ": "S", "TMP": "S", "NIT": "S", "GEN": "S"}}], "notes": []}'
         s_indent_multiline_multires = 'Culture    :\n                                                       PEN FLU AMP AUG\n                   Staphylococcus aureus 3+             R   S\n                   Klebsiella pneumoniae 1+                     R   S\n                        Candida albicans scant\n\n                                                       CFZ ERY SXT GEN\n                   Staphylococcus aureus 3+             S   S   S\n                   Klebsiella pneumoniae 1+             S       S   S\n                        Candida albicans scant\n\n                                                       TET\n                   Staphylococcus aureus 3+             S\n                   Klebsiella pneumoniae 1+\n                        Candida albicans scant\n\n\n'
-        r_indent_multiline_multires = '{"cultures": {"Staphylococcus aureus 3+": {"resistances": {"PEN": "R", "FLU": "S", "AMP": "", "AUG": "", "CFZ": "S", "ERY": "S", "SXT": "S", "GEN": "", "TET": "S"}}, "Klebsiella pneumoniae 1+": {"resistances": {"PEN": "", "FLU": "", "AMP": "R", "AUG": "S", "CFZ": "S", "ERY": "", "SXT": "S", "GEN": "S", "TET": ""}, "indentText": "Candida albicans scant"}}, "notes": []}'
+        r_indent_multiline_multires = '{"cultures": [{"name": "Staphylococcus aureus 3+", "resistances": {"PEN": "R", "FLU": "S", "AMP": "", "AUG": "", "CFZ": "S", "ERY": "S", "SXT": "S", "GEN": "", "TET": "S"}}, {"name": "Klebsiella pneumoniae 1+", "resistances": {"PEN": "", "FLU": "", "AMP": "R", "AUG": "S", "CFZ": "S", "ERY": "", "SXT": "S", "GEN": "S", "TET": ""}, "indent": "Candida albicans scant"}], "notes": []}'
 
         parser = CultureParser()
 
-        result = parser.getCulture(s_basic)
-        self.assertEqual(result,json.loads(r_basic))
+        expected = json.loads(r_basic)
+        actual = json.loads(parser.parseCulture(s_basic))
+        self.assertEqual(actual,expected)
 
-        result = parser.getCulture(s_gt_character)
-        self.assertEqual(result,json.loads(r_gt_character))
+        expected = json.loads(r_gt_character)
+        actual = json.loads(parser.parseCulture(s_gt_character))
+        self.assertEqual(expected,actual)
 
-        result = parser.getCulture(s_inlineheader)
-        self.assertEqual(result,json.loads(r_inlineheader))
+        expected = json.loads(r_inlineheader)
+        actual = json.loads(parser.parseCulture(s_inlineheader))
+        self.assertEqual(expected,actual)
 
-        result = parser.getCulture(s_indent_multiline_multires)
-        self.assertEqual(result,json.loads(r_indent_multiline_multires))
+        expected = json.loads(r_indent_multiline_multires)
+        actual = json.loads(parser.parseCulture(s_indent_multiline_multires))
+        self.assertEqual(expected,actual)
 
-        print(r_indent_multiline_multires)
+        print(expected)
 
 
 class TestHighLevelScenarios(unittest.TestCase):

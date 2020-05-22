@@ -31,7 +31,7 @@ def readFile(filepath):
 
 def getReport(list):
     for l in list:
-        if l.culture.hasResistance():
+        if l.culture.hasCultures():
             return l
 
 def clearFile(file):
@@ -53,7 +53,7 @@ def getReportWithResis(listOfReports, match = -1):
     if match == -1:
         matchesFound = 1
     for r in listOfReports:
-        if r.culture.hasResistance():
+        if r.culture.hasCultures():
             matchesFound += 1
             if(matchesFound == match):
                 return r
@@ -77,16 +77,14 @@ catherName = 'CATHETER TIP MICROBIOLOGY'
 bloodId = 4
 catherId = 1161
 
-reportList = df['ValueNew'].head(1000)
+reportList = df['ValueNew'].head(1200)
 ri = ReportInfo()
+reports = ri.generateLimitedReportList(reportList,catherName)
+print('total parsed reports {0}'.format(len(reports)))
 #reports = ri.generateReportList(reportList)
 
-#for r in reports:
-#    if r.culture.hasResistance():
-#        print('{0} {1}'.format(r.csvIndex,json.dumps(r.jsonObj)))
-
-tblParser = CultureParser()
-parsed = tblParser.getCulture(readFile('test.txt'))
-print(parsed)
+for r in reports:
+    if r.culture.hasCultures():
+        print('{0} {1}'.format(r.csvIndex,json.dumps(r.jsonObj)))
 
 print('done')
