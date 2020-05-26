@@ -35,11 +35,12 @@ report_types = [
     "C. diphtheriae gene toxin detection",
     "MINIMUM INHIBITORY CONCENTRATIONS\(MIC\)",
     "[\w+ ]*REFERENCE LABORATORY",
+    "EYE, EAR, NOSE, THROAT MICROBIOLOGY",
     # "NEISSERIA MENINGITIS REFERENCE LABORATORY",
     # "PNEUMOCOCCAL REFERENCE LABORATORY",
-    "[\w+ ]*MICROBIOLOGY",
-    # "MICROBIOLOGY FROM SUPERFICIAL SITES",
+    "MICROBIOLOGY FROM SUPERFICIAL SITES",
     "MICROBIOLOGY FROM[ \w+]*",
+    "[\w+ ]*MICROBIOLOGY",
     # "RESPIRATORY MICROBIOLOGY",
 ]
 
@@ -140,10 +141,51 @@ class NotFound(Exception):
     def __init__(self,message):
         self.message = message
 
+class TextParser:
+    """Generic text parser that can be used to help build the JSON objects that the reports use."""
+
+    def getKeyValuePair(self,textblock):
+        # Generic function to get the key/value of the field. Pass in the raw text block from the csv.
+        # It will handle key/value and cases where there is no value, instead just a row.
+        # Expected format:
+        # Leucocytes     Scant
+        # Epithelials    Nil
+        # Normal respiratory flora scant
+        #
+        vals = {'notes': []}
+        for row in textblock.split('\n'):
+            match = re.search('(\w[\w ]+?) {2}(\w[\w+]*)', row)
+            if match is not None:
+                m1 = match.group(1)  # Name
+                m2 = match.group(2)  # Value
+                vals[m1.strip()] = m2
+            else:
+                val = row.strip()
+                if len(val) > 0:
+                    vals['notes'].append(val)
+        return vals
+
+    def getKeyValueNoNotes(self,textblock):
+        # Generic function to get the key/value of the field. Pass in the raw text block from the csv.
+        # It will handle key/value and cases only. if there is a case where there is no value, then it will be ignored
+        # Expected format:
+        # Leucocytes     Scant
+        # Epithelials    Nil
+        #
+        vals = {}
+        for row in textblock.split('\n'):
+            match = re.search('(\w[\w ]+?) {2}(\w[\w+]*)', row)
+            if match is not None:
+                m1 = match.group(1)  # Name
+                m2 = match.group(2)  # Value
+                vals[m1.strip()] = m2
+
+        return vals
+
 class CultureParser:
 
     def getTextInRow(self,row, startPos = 0):
-        """Row is text. cultureRow is bool, indicates if the row is expected to have a culture"""
+        """Row is the raw text row. StartPos is when the parser will start to expect text.. """
         # Scan through the row. If text is found, then start adding to the return value. If 2 whitespace chars are found, exit.
         exceptionChars = ['>'] # If one of these are found, then stop
         start = True
@@ -223,6 +265,14 @@ class CultureParser:
 
         return False
 
+    def getAbbrevInRow(self,row,listofabbreviations):
+        abbres = []
+        for abbr in listofabbreviations:
+            if abbr in row:
+                abbres.append(abbr)
+
+        return abbres
+
     def parseAbbreviations(self,allrows,abbreviationList):
         abbreviationGuide = {}
         notes = [] # Catchall for any text found that does not match the abbreviation guide. Most likely bad user input
@@ -237,18 +287,32 @@ class CultureParser:
         for x in range(abbrStart,rLen):
             # Start from the guide list
             row = allrows[x]
-            for abbr in abbreviationList:
-                # For each abbreviation
-                try:
-                    abbrIdx = row.index(abbr) + len(abbr)
-                    matchedText = self.getTextInRow(row,abbrIdx)
-                    abbreviationGuide[abbr] = matchedText
-                except ValueError:
-                    if len(row.strip()) > 0 and not self.isAbbrev(row,abbreviationList):
-                        # If row contains text and doesn't have any abbreviations, assume it's some other text
-                        notes.append(row)
+            if len(abbreviationList) == 0:
+                # If there are no abbreviations, then get any text found and add it to notes.
+                text = row.strip()
+                if len(text) > 0:
+                    notes.append(text)
+            else:
+                abbrsFound = self.getAbbrevInRow(row,abbreviationList)
+                for abbr in abbrsFound:
+                    # For each abbreviation
+                    try:
+                        abbrIdx = row.index(abbr) + len(abbr)
+                        matchedText = self.getTextInRow(row,abbrIdx)
+                        abbreviationGuide[abbr] = matchedText
+                    except ValueError:
+                        if len(row.strip()) > 0 and not self.isAbbrev(row,abbreviationList):
+                            # If row contains text and doesn't have any abbreviations, assume it's some other text
+                            notes.append(row.strip())
+                if len(abbrsFound) == 0 and len(row.strip()) > 0:
+                    # if no abbreviation in row, then assume it's a note
+                    notes.append(row.strip())
 
-        abbreviationGuide['notes'] = ';'.join(notes)
+
+        if len(notes) == 0:
+            abbreviationGuide['notes'] = []
+        else:
+            abbreviationGuide['notes'] = ';'.join(notes)
         return abbreviationGuide
 
     def parseCulture(self, cultureTextBlock):
@@ -263,7 +327,7 @@ class CultureParser:
         listofcultures = cultures['cultures']
         currentHeaderText = ''
         parentStartPos = 1000  # High number to trigger first iteration
-        parentCulture = Culture('')
+        parentCulture = Culture('') #POtentially convert this to a dict rather than Culture obj
         abbreviationList = []
 
         rows = cultureTextBlock.split('\n')
@@ -301,7 +365,7 @@ class CultureParser:
                         listofcultures.append(parentCulture)
             else:
                 # If no culture expected and it's not a header, we can safely try to trim off the Culture field
-                pattern = 'Culture\s*:?'
+                pattern = 'Culture\s*:?|CULTURE\s*:|CULTURE\s*'
                 m1 = re.match(pattern,row)
                 if m1 is not None:
                     text = self.getTextInRow(row[m1.end():])
@@ -311,7 +375,16 @@ class CultureParser:
                     cultures['notes'].append(text)
 
         #return CultureEncoder().encode(cultures)
-        return cultures
+        # Convert list of cultures to a dict for json format
+        tmpdict = []
+        for cult in listofcultures:
+            tmpdict.append(cult.toDict())
+
+        try:
+            return {'cultures': tmpdict, 'notes': cultures['notes'], 'abbreviations': cultures['abbreviations']}
+        except KeyError:
+            return {'cultures': tmpdict, 'notes': cultures['notes']}
+
 
 class MicrobiologyReportExtractor:
     # Handles extracting annotations from text based microbiology reports from AusLab
@@ -351,6 +424,14 @@ class MicrobiologyReportExtractor:
     def print_text(self):
         print(self.text)
 
+    def addSectionHead(self,item):
+        self.section_heads_colon.append(item)
+        # Recalculate the section heads
+        self.next_section_re = '({}|{})'.format(
+            '|'.join([(s + '\s*:\s*') for s in self.section_heads_colon]),
+            '|'.join(self.section_heads_caps)
+        )
+
     # Get the report type from the text.  Check only 1 report found.
     # TO DO: check report is right type
     def get_reports(self):
@@ -370,7 +451,11 @@ class MicrobiologyReportExtractor:
 
     def get_chemistry(self): return self.get_section_from_text('(Chemistry\s*:\s*|CHEMISTRY)')
 
-    def get_culture(self): return self.get_section_from_text('(Culture\s*:\s*|^CULTURE|\nCULTURE\s+|CULTURE\s*:\s*)')
+    def get_culture(self):
+        culturetext = text_between_patterns_including_header('(Culture\s*:\s*|^CULTURE|\nCULTURE\s+|CULTURE\s*:\s*)', self.next_section_re, self.text)
+        parser = CultureParser()
+
+        return parser.parseCulture(culturetext)
 
     def get_culture_with_header(self):
         return text_between_patterns_including_header('(Culture\s*:\s*|^CULTURE|\nCULTURE\s+|CULTURE\s*:\s*)', self.next_section_re, self.text)
@@ -381,6 +466,7 @@ class MicrobiologyReportExtractor:
 
     def get_json(self):
         section = self.text
+        parser = TextParser()
 
         lab_no = re.findall(self.lab_pattern, section)
 
@@ -393,8 +479,8 @@ class MicrobiologyReportExtractor:
 
         cell_count = self.get_section_from_text('Cell Count\s*:\s*')
         specimen = self.get_section_from_text('Specimen\s*:\s*')  # Specimen   :    Swab Wound Left,Hand\n\n\nCell Count
-        gram_stain = self.get_section_from_text(
-            'Gram Stain\s*:\s*')  # Gram Stain :    Gram pos. cocci scant\n\n\nCulture
+        #gram_stain = self.get_section_from_text('Gram Stain\s*:\s*')  # Gram Stain :    Gram pos. cocci scant\n\n\nCulture
+        gram_stain = parser.getKeyValuePair(self.get_section_from_text('Gram Stain\s*:\s*'))
         red_cell_morphology = self.get_section_from_text('Red Cell Morphology\s*:\s*')
         casts = self.get_section_from_text('CASTS\s*:\s*')
         mrsa_screen = self.get_section_from_text(
@@ -543,27 +629,128 @@ class UrineMicrobiologyReportExtractor(MicrobiologyReportExtractor):
         return json
 
 class BloodMicrobiologyReportExtractor(MicrobiologyReportExtractor):
-
-    def get_culture(self):
-        culturetext = super().get_culture_with_header()
-        parser = CultureParser()
-
-        return parser.parseCulture(culturetext)
+    pass
 
 class CatheterTipReportExtractor(MicrobiologyReportExtractor):
+    pass
+
+class CerebrospinalFluidReportExtractor(MicrobiologyReportExtractor):
+    pass
+
+class SuperficialReportExtractor(MicrobiologyReportExtractor):
+
+    def get_json(self):
+        parser = TextParser()
+        json = super().get_json()
+        json['cell_count'] = parser.getKeyValueNoNotes(json['cell_count'])
+        return json
+
+class MultiResistanceReportExtractor(MicrobiologyReportExtractor):
+    def __init__(self,text):
+        super().__init__(text)
+        super().addSectionHead('VRE Screen')
+
+    def get_json(self):
+        json = super().get_json()
+        vreScreen = re.findall(self.attr_pattern.format('VRE Screen'), self.text)
+        json['Vre Screen'] = vreScreen
+        return json
+
+class FaecesReportExtractor(MicrobiologyReportExtractor):
+    def __init__(self,text):
+        super().__init__(text)
+        super().addSectionHead('Parasitology')
+
+    def get_json(self):
+        json = super().get_json()
+        json['Parasitology'] = re.findall(self.attr_pattern.format('Parasitology'), self.text)
+        json.pop('casts')
+        json.pop('gram_stain')
+        json.pop('cell_count')
+        json.pop('chemistry')
+        json['microscopy'] = self.get_microscopy()
+        return json
+
+    def get_microscopy(self):
+        vals = []
+        text = self.get_section_from_text('Microscopy\s*:')
+        for row in text.split('\n'):
+            match = re.search('(\w[\w ]+?) {2}(\w[\w+]*)',row)
+            if match is not None:
+                m1 = match.group(1) # Name
+                m2 = match.group(2) # Value
+                vals.append({'label': m1, 'val': m2, 'unit': '', 'rr': ''})
+        return vals
+
+class RespiratoryReportExtract(MicrobiologyReportExtractor):
+    def get_json(self):
+        json = super().get_json()
+
+        parser = TextParser()
+        json['gram_stain'] = parser.getKeyValuePair(self.get_section_from_text('Gram Stain\s*:\s*'))
+
+        return json
+
+class BodyFluidReportExtractor(MicrobiologyReportExtractor):
+    def __init__(self, text):
+        super().__init__(text)
+        super().addSectionHead('Crystals')
+
+    def get_json(self):
+        json = super().get_json()
+        json['crystals'] = re.findall(self.attr_pattern.format('Crystals'), self.text)
+
+        return json
+
+class DifficileScreeningReportExtractor(MicrobiologyReportExtractor):
+
+    def __init__(self, text):
+        super().__init__(text)
+        super().addSectionHead('C difficile Screen')
 
     def get_culture(self):
-        culturetext = super().get_culture_with_header()
-        parser = CultureParser()
+        pass
 
-        return parser.parseCulture(culturetext)
+    def get_json(self):
+        json = super().get_json()
+
+        return {
+            'report': json['report'],
+            'lab_no': json['lab_no'],
+            'micro_no': json['micro_no'],
+            'collected': json['collected'],
+            'registered': json['collected'],
+            'ward': json['ward'],
+            'specimen': json['specimen'],
+            'c_difficile_screen': self.get_section_from_text('C difficile Screen\s*:\s*')
+        }
+
+class EENTReportExtractor(MicrobiologyReportExtractor):
+    # Ear, eyes, nose, throat
+    pass
+
+class BacterialAntigensReportExtractor(MicrobiologyReportExtractor):
+
+    def get_json(self):
+        """Get first \n, get before \n and this will be the specimen. Everything after is some weird custome field"""
+        parser = TextParser()
+
+        idx = json['specimen'].index('\n')
+        specimen = json['specimen'][0:idx]
+        extraContent = json['specimen'][idx:]
+
+        # parser.getKeyValuePair()
+
+
+
 
 class UnknownReportExtractor(MicrobiologyReportExtractor):
     def get_json(self):
         # Return an object with the various attributes extracted from the section
         return {
             'report': "Unknown Report Type",
-            'text': self.text
+            'lab_no': self.text,
+            'micro_no': ''
         }
 
 
@@ -582,6 +769,24 @@ def report_extractor_factory(section):
         return BloodMicrobiologyReportExtractor(section)
     if report[0] == 'CATHETER TIP MICROBIOLOGY':
         return CatheterTipReportExtractor(section)
+    if report[0] == 'CEREBROSPINAL FLUID MICROBIOLOGY':
+        return CerebrospinalFluidReportExtractor(section)
+    if report[0] == 'MICROBIOLOGY FROM SUPERFICIAL SITES':
+        return SuperficialReportExtractor(section)
+    if report[0] == 'MULTI-RESISTANT ORGANISM SCREEN':
+        return MultiResistanceReportExtractor(section)
+    if report[0] == 'FAECES MICROBIOLOGY':
+        return FaecesReportExtractor(section)
+    if report[0] == 'RESPIRATORY MICROBIOLOGY':
+        return RespiratoryReportExtract(section)
+    if report[0] == 'BODY FLUID EXAMINATION':
+        return BodyFluidReportExtractor(section)
+    if report[0] == 'C difficile screening':
+        return DifficileScreeningReportExtractor(section)
+    if report[0] == 'EYE, EAR, NOSE, THROAT MICROBIOLOGY':
+        return EENTReportExtractor(section)
+    if report[0] == 'Bacterial Antigens':
+        return BacterialAntigensReportExtractor(section)
     else:
         raise Exception("Unrecognized report {}.".format(report[0]))
 

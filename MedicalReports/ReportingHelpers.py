@@ -1,4 +1,6 @@
+import re
 import pandas
+
 from validators.json_validator import JsonValidator
 from report_extract import extract_value_report_as_json
 from MedicalReports.Reports import Report
@@ -12,16 +14,19 @@ class ReportInfo():
     """ Class to get information about reports. """
 
     def generateSingleReport(self,dataframeColumn,index):
-        reportList = dataframeColumn
-        idx = 0
-
-        val = reportList[index]
+        val = dataframeColumn[index]
         jsonval = extract_value_report_as_json(val)
         for jsonreport in jsonval:
             if 'error' not in jsonreport:
-                return Report(jsonreport, idx)
+                return Report(jsonreport, index)
+        return None
 
-
+    def generateReportsFromCsvRow(self,row: str) -> Report:
+        jsonval = extract_value_report_as_json(row)
+        for jsonreport in jsonval:
+            if 'error' not in jsonreport:
+                return Report(jsonreport, 0)
+        return None
 
     def generateReportList(self,dataframeColumn):
         """ Will accept a dataframe with a single column, then convert it into a list of Report objects. It will exclude
@@ -44,14 +49,13 @@ class ReportInfo():
         reports = []
         idx = 0
 
-        expectedReportWithCulture = 0
         for rep in reportList:
             if reportType in rep:
-                if 'Antibiotic Abbreviations Guide' in rep:
-                    expectedReportWithCulture += 1 # For debuggin
                 jsonval = extract_value_report_as_json(rep)
                 for jsonreport in jsonval:
-                    if 'error' not in jsonreport:
+                    #if 'error' in jsonreport:
+                    #    raise Exception(jsonval['exception'])
+                    if 'error' not in jsonreport and reportType in jsonreport['report'][0]:
                         try:
                             reports.append(Report(jsonreport,idx,rep))
                         except Exception as e:
@@ -123,4 +127,43 @@ class ReportInfo():
             leng = len(output)-1
             del output[leng] # Remove the trailing empty array section
             return pandas.DataFrame(output,columns=ReportTypes().reportStruct)
+
+    def getReportsForTesting(self,reportList):
+        """This will get the min, max and report with the most fields and return them as a list"""
+        min = 100000
+        max = 0
+        colons = 0
+
+        currentMin = None
+        currentMax = None
+        currentColon = None
+
+        for report in reportList:
+            repLen = len(report.rawdata)
+            colonCount = report.rawdata.count(':')
+            if repLen < min:
+                currentMin = report
+                min = len(report.rawdata)
+            if repLen > max:
+                currentMax = report
+                max = len(report.rawdata)
+            if colonCount > colons:
+                colons = colonCount
+                currentColon = report
+
+        return [currentMin,currentMax,currentColon]
+
+    def getUniqueReportTypes(self,csvRows):
+        reportnames = []
+        for row in csvRows:
+            splits = row.split('\n')
+            if 'Lab No' in splits[1]:
+                match = re.search('(\w[\w ]+?) {2}',splits[3]).group(1).strip()
+                if match not in reportnames:
+                    reportnames.append(match)
+            else:
+                if splits[1] not in reportnames:
+                    reportnames.append(splits[1])
+
+        return reportnames
 

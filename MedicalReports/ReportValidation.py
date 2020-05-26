@@ -1,4 +1,7 @@
 import re
+import typing
+
+from MedicalReports.Reports import Report
 
 """
 List of report functions that can be used for validation. If true is returned then it's valid. If false is returned
@@ -9,7 +12,8 @@ invalidRegex = ['\\?', '#']
 warningRegex = ['\\?']
 
 
-def validateWard(report):
+def validateWard(report: Report) -> bool:
+    """Pass in a Report object"""
     # Ensures that no invalid characters are part of the Registered field.
     valid = True
     invalidRegex = ['\\?', '#', ':']
@@ -19,7 +23,8 @@ def validateWard(report):
             valid = False
     return valid
 
-def validateRegistered(report):
+
+def validateRegistered(report: Report) -> bool:
     # Ensures that no invalid characters are part of the Registered field.
     valid = True
     textToCheck = report.jsonObj['registered'][0]
@@ -30,7 +35,8 @@ def validateRegistered(report):
         raise Exception('Registered is blank')
     return valid
 
-def validateCollected(report):
+
+def validateCollected(report: Report) -> bool:
     # Ensures that no invalid characters are part of the Registered field.
     valid = True
     textToCheck = report.jsonObj['collected'][0]
@@ -41,7 +47,9 @@ def validateCollected(report):
         raise Exception('Collected is blank')
     return valid
 
-def validateMicroNo(report):
+
+def validateMicroNo(report: Report) -> bool:
+    """Pass in a Report object"""
     # Ensures that no invalid characters are part of the Registered field.
     valid = True
     if len(report.jsonObj['micro_no']) == 0:
@@ -52,7 +60,8 @@ def validateMicroNo(report):
             valid = False
     return valid
 
-def validateLabNo(report):
+
+def validateLabNo(report: Report) -> bool:
     # Ensures that no invalid characters are part of the Registered field.
     valid = True
     textToCheck = report.jsonObj['lab_no'][0]
@@ -62,7 +71,7 @@ def validateLabNo(report):
     return valid
 
 
-def validateAllReportFields(report):
+def validateAllReportFields(report: Report) -> bool:
     valid = True
     try:
         if not validateWard(report):

@@ -6,6 +6,7 @@ from report_extract.report_extract import CultureParser
 from validators.json_validator import *
 
 from MedicalReports.Cultures import Culture
+from MedicalReports.ReportingHelpers import ReportInfo
 
 # Features to test
 from report_extract import report_pattern, split_sections, extract_value_report_as_json
@@ -108,15 +109,29 @@ class TestExtractBasics(unittest.TestCase):
                               ])
 
     def test_general_report_parsing(self):
-        for x in range(1):
-            row = df.iloc[27840]['ValueNew']
-            separator = "\n"
+        """Will get the first report found in reportTypes then compare it against the MedicalReport checker that it
+        applied all the values that it expected. """
+        reportTypes = ['URINE MICROBIOLOGY',
+                       'BLOOD CULTURE MICROBIOLOGY',
+                       'CATHETER TIP MICROBIOLOGY',
+                       'CEREBROSPINAL FLUID MICROBIOLOGY',
+                       'MICROBIOLOGY FROM SUPERFICIAL SITES',
+                       'MULTI-RESISTANT ORGANISM SCREEN',
+                       'FAECES MICROBIOLOGY',
+                       'RESPIRATORY MICROBIOLOGY',
+                       'BODY FLUID EXAMINATION',
+                       'C difficile screening',
+                       'EYE, EAR, NOSE, THROAT MICROBIOLOGY']
+        ri = ReportInfo()
+        rows = df['ValueNew'].head(1000)
 
-            reportValue = MedicalReport(row, separator)
-
-            json = extract_value_report_as_json(row)
-            res = validator.doCheckAndReturnErrors(json[0], reportValue)
+        for repType in reportTypes:
+            parsedReport = ri.generateLimitedReportList(rows,repType)[0]
+            baseReport = MedicalReport(parsedReport.rawdata, "\n")
+            res = validator.doCheckAndReturnErrors(parsedReport, baseReport)
             self.assertEqual([], res, 'Errors were found during the run')
+
+
 
     def test_large_reports(self):
         reportname = 'BLOOD CULTURE MICROBIOLOGY'
@@ -134,7 +149,7 @@ class TestExtractBasics(unittest.TestCase):
         s_inlineheader = 'CULTURE:                                                   AMP CFZ TMP NIT\n                             Escherichia coli > 10^8/L      S   S   S   S\n\n                                                           GEN\n                             Escherichia coli > 10^8/L      S\n\n\n'
         r_inlineheader = '{"cultures": [{"name": "Escherichia coli", "resistances": {"AMP": "S", "CFZ": "S", "TMP": "S", "NIT": "S", "GEN": "S"}}], "notes": []}'
         s_indent_multiline_multires = 'Culture    :\n                                                       PEN FLU AMP AUG\n                   Staphylococcus aureus 3+             R   S\n                   Klebsiella pneumoniae 1+                     R   S\n                        Candida albicans scant\n\n                                                       CFZ ERY SXT GEN\n                   Staphylococcus aureus 3+             S   S   S\n                   Klebsiella pneumoniae 1+             S       S   S\n                        Candida albicans scant\n\n                                                       TET\n                   Staphylococcus aureus 3+             S\n                   Klebsiella pneumoniae 1+\n                        Candida albicans scant\n\n\n'
-        r_indent_multiline_multires = '{"cultures": [{"name": "Staphylococcus aureus 3+", "resistances": {"PEN": "R", "FLU": "S", "AMP": "", "AUG": "", "CFZ": "S", "ERY": "S", "SXT": "S", "GEN": "", "TET": "S"}}, {"name": "Klebsiella pneumoniae 1+", "resistances": {"PEN": "", "FLU": "", "AMP": "R", "AUG": "S", "CFZ": "S", "ERY": "", "SXT": "S", "GEN": "S", "TET": ""}, "indent": "Candida albicans scant"}], "notes": []}'
+        r_indent_multiline_multires = '{"cultures": [{"name": "Staphylococcus aureus 3+", "resistances": {"PEN": "R", "FLU": "S", "AMP": "", "AUG": "", "CFZ": "S", "ERY": "S", "SXT": "S", "GEN": "", "TET": "S"}}, {"name": "Klebsiella pneumoniae 1+", "resistances": {"PEN": "", "FLU": "", "AMP": "R", "AUG": "S", "CFZ": "S", "ERY": "", "SXT": "S", "GEN": "S", "TET": ""}, "indentItem": "Candida albicans scant"}], "notes": []}'
         s_inline_notes = 'Culture      :      No growth after 5 days incubation'
         r_inline_notes = '{"cultures": [], "notes": ["No growth after 5 days incubation"]}'
 

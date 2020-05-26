@@ -2,7 +2,9 @@
 
 import re 
 import pandas
+import typing
 
+from MedicalReports.Reports import Report
 from report_extract import *
 import math
 
@@ -10,17 +12,17 @@ file = 'Data/Microbiology2_conv.csv'
 separator = '||'
 
 
-
-# Goal:  
+# Goal:
 # Load in a row from the CSV
 # Get the JSON equivalent of that row
 # Ensure that the JSON has the expected properties
 # Ensure that the JSON has the expected fields
-# 
+
 
 class MedicalReport():
+	"""Auto parsed report using basic rules to try to find the key:value pairs from the csv file"""
 
-	def __init__(self,rowString,separator):
+	def __init__(self,rowString: str,separator: str) -> None:
 		self.fields = {}
 		self.properties = [] #Currently unused.
 		self.rawValues = []
@@ -98,7 +100,7 @@ class JsonValidator():
 
 		return r
 
-	def checkJsonAgainstReport(self,json,report):
+	def checkJsonAgainstReport(self,json: dict,report: MedicalReport):
 		for key,value in report.fields.items():
 			if(key not in self.dontMatch):
 				if(self.checker(value,self.getAllJsonValues(json))):
@@ -106,14 +108,14 @@ class JsonValidator():
 				else:
 					print(" '{0}' failed".format(value))
 
-	def doCheckAndReturnErrors(self,json,report):
+	def doCheckAndReturnErrors(self, reportExtractReport: Report, medReport: MedicalReport):
 		errors = []
-		if('error' in json.keys()):
-			errors.append("{0} - {1}".format(json['error'],json['exception']))
+		if('error' in reportExtractReport.jsonObj.keys()):
+			errors.append("{0} - {1}".format(reportExtractReport.jsonObj['error'], reportExtractReport.jsonObj['exception']))
 			return errors
-		for key,value in report.fields.items():
+		for key,value in medReport.fields.items():
 			if(key not in self.dontMatch):
-				if(self.checker(value,self.getAllJsonValues(json))):
+				if(self.checker(value, self.getAllJsonValues(reportExtractReport.jsonObj))):
 					pass
 				else:
 					errors.append(value)

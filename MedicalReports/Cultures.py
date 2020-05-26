@@ -12,6 +12,12 @@ class Culture():
         self.resistances = resistance
         self.indentItem = indentItem
 
+    def toDict(self):
+        if self.indentItem is None:
+            return {'name': self.name, 'resistances': self.resistances}
+        else:
+            return {'name': self.name, 'resistances': self.resistances, 'indentItem': self.indentItem}
+
 class CultureBlock():
     """Dumb class to hold information about the Culture"""
     # Objects
@@ -39,3 +45,10 @@ class CultureBlock():
             return True
         else:
             return False
+
+    def toDict(self):
+        tmplist = []
+        for c in self.cultures:
+            tmplist.append({'name': c.name, 'resistances': c.resistances, 'indentItem': c.indentItem})
+
+        return tmplist

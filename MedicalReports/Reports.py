@@ -34,14 +34,16 @@ class Report():
                 self.reportType = 'error'
             else:
                 self.reportType = self.jsonObj['report']
-                self.culture = CultureBlock(self.jsonObj['culture'])
+                if 'culture' in self.jsonObj.keys():
+                    self.culture = CultureBlock(self.jsonObj['culture'])
         except AttributeError:
             self.jsonObj = jsondata
             if('error' in self.jsonObj):
                 self.reportType = 'error'
             else:
                 self.reportType = jsondata['report'][0]
-                self.culture = CultureBlock(self.jsonObj['culture'])
+                if 'culture' in self.jsonObj.keys():
+                    self.culture = CultureBlock(self.jsonObj['culture'])
 
     def toJson(self):
         return CultureEncoder().encode(self.jsonObj)

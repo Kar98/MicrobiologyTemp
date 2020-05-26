@@ -1,4 +1,4 @@
-from report_extract.report_extract import CultureParser
+from report_extract.report_extract import CultureParser, MultiResistanceReportExtractor
 from validators.json_validator import *
 import logging
 import pandas
@@ -58,13 +58,6 @@ def getReportWithResis(listOfReports, match = -1):
             if(matchesFound == match):
                 return r
 
-wordFreqDic = {
-    "Hello": 56,
-    "at" : 23 ,
-    "test" : 43,
-    "this" : 43
-    }
-
 
 
 df = loadFile()
@@ -73,37 +66,29 @@ validator = JsonValidator()
 urineName = 'URINE MICROBIOLOGY'
 bloodName = 'BLOOD CULTURE MICROBIOLOGY'
 catherName = 'CATHETER TIP MICROBIOLOGY'
+cereName = 'CEREBROSPINAL FLUID MICROBIOLOGY'
+superfiName = 'MICROBIOLOGY FROM SUPERFICIAL SITES'
+multiName = 'MULTI-RESISTANT ORGANISM SCREEN'
+faecesName = 'FAECES MICROBIOLOGY'
+bodyName = 'BODY FLUID EXAMINATION'
+diffName = 'C difficile screening'
+eentName = 'EYE, EAR, NOSE, THROAT MICROBIOLOGY'
 
-bloodId = 4
-catherId = 445
-
-reportList = df['ValueNew'].head(10000)
-tmp = reportList[0]
+#Load data
+reportList = df['ValueNew'].head(1000)
 ri = ReportInfo()
 
-#print(ri.generateSingleReport(reportList,79).toJson())
+# main()
+reports = ri.generateLimitedReportList(reportList,eentName)
+len(reports)
 
+#Stats:
+uniques = ri.getUniqueReportTypes(reportList)
+print(uniques)
+stats = ri.getReportsForTesting(reports)
+print('min: {0}, max: {1}, colons: {2}'.format(stats[0].csvIndex,stats[1].csvIndex,stats[2].csvIndex))
 
-
-reports = ri.generateLimitedReportList(reportList,bloodName)
-print('total parsed reports {0}'.format(len(reports)))
-#reports = ri.generateReportList(reportList)
-
-clearFile('myjson.txt')
-clearFile('myraw.txt')
-clearFile('jsonoutput.txt')
-
-written = False
-with open('jsonoutput.txt','a') as f:
-    for r in reports:
-        if 'No growth' in r.culture.notes:
-            if written == False:
-                writeFile('myjson.txt',r.toJson())
-                writeFile('myraw.txt',r.rawdata)
-                written = True
-
-        f.write('{0}\n'.format(r.toJson()))
-
-
+print(json.dumps(reports[0].jsonObj))
+print(reports[0].rawdata)
 
 print('done')
