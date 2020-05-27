@@ -39,9 +39,9 @@ report_types = [
     # "NEISSERIA MENINGITIS REFERENCE LABORATORY",
     # "PNEUMOCOCCAL REFERENCE LABORATORY",
     "MICROBIOLOGY FROM SUPERFICIAL SITES",
-    "MICROBIOLOGY FROM[ \w+]*",
+    "MICROBIOLOGY FROM[ \w+/]*",
     "[\w+ ]*MICROBIOLOGY",
-    # "RESPIRATORY MICROBIOLOGY",
+    "RESPIRATORY MICROBIOLOGY"
 ]
 
 report_pattern = '|'.join(report_types)
@@ -84,7 +84,6 @@ def split_sections(value):
 # Routine to return text between two regex patterns
 def text_between_patterns(p1, p2, text):
     m1 = re.search(p1, text)
-
     if not (m1):
         # No p1 match found in text
         return ""
@@ -154,7 +153,7 @@ class TextParser:
         #
         vals = {'notes': []}
         for row in textblock.split('\n'):
-            match = re.search('(\w[\w ]+?) {2}(\w[\w+]*)', row)
+            match = re.search('(\w[\w \.]+?) {2}(\w[\w ]*)', row)
             if match is not None:
                 m1 = match.group(1)  # Name
                 m2 = match.group(2)  # Value
@@ -174,7 +173,7 @@ class TextParser:
         #
         vals = {}
         for row in textblock.split('\n'):
-            match = re.search('(\w[\w ]+?) {2}(\w[\w+]*)', row)
+            match = re.search('(\w[\w ]+?) {2}(\w[\w+ ]*)', row)
             if match is not None:
                 m1 = match.group(1)  # Name
                 m2 = match.group(2)  # Value
@@ -223,11 +222,17 @@ class CultureParser:
             return False
 
     def getHeaderRowValue(self, rowtext):
+        # Potentially use a custom parser to find if it's a header row.
         pattern = ' [A-Z]{2,3}'
         matches = re.findall(pattern, rowtext)
         output = []
         for m in matches:
-            output.append(m.strip())
+            # If it's only 2 chars, add an extra space to align the header correctly
+            if len(m.strip()) == 2:
+                m = m.strip()+' '
+                output.append(m)
+            else:
+                output.append(m.strip())
         return ' '.join(output)
 
     def getResistanceValues(self, startHeaderPos, rowtext, headertext):
@@ -424,8 +429,22 @@ class MicrobiologyReportExtractor:
     def print_text(self):
         print(self.text)
 
+    def addSectionHeadColon(self, item):
+        # When the match gets long, it can match partial matches. Eg there are 2 headers: Culture and Culture stuff.
+        # The regex will match Culture if it's first since it's the easiest to match and the parser will get wrong info.
+        # Ensure that the hardest to match regex, is at the front of the regex pattern.
+        self.section_heads_colon.insert(0,item)
+        # Recalculate the section heads
+        self.next_section_re = '({}|{})'.format(
+            '|'.join([(s + '\s*:\s*') for s in self.section_heads_colon]),
+            '|'.join(self.section_heads_caps)
+        )
+
     def addSectionHead(self,item):
-        self.section_heads_colon.append(item)
+        # When the match gets long, it can match partial matches. Eg there are 2 headers: Culture and Culture stuff.
+        # The regex will match Culture if it's first since it's the easiest to match and the parser will get wrong info.
+        # Ensure that the hardest to match regex, is at the front of the regex pattern.
+        self.section_heads_caps.insert(0, item)
         # Recalculate the section heads
         self.next_section_re = '({}|{})'.format(
             '|'.join([(s + '\s*:\s*') for s in self.section_heads_colon]),
@@ -648,7 +667,7 @@ class SuperficialReportExtractor(MicrobiologyReportExtractor):
 class MultiResistanceReportExtractor(MicrobiologyReportExtractor):
     def __init__(self,text):
         super().__init__(text)
-        super().addSectionHead('VRE Screen')
+        super().addSectionHeadColon('VRE Screen')
 
     def get_json(self):
         json = super().get_json()
@@ -659,7 +678,7 @@ class MultiResistanceReportExtractor(MicrobiologyReportExtractor):
 class FaecesReportExtractor(MicrobiologyReportExtractor):
     def __init__(self,text):
         super().__init__(text)
-        super().addSectionHead('Parasitology')
+        super().addSectionHeadColon('Parasitology')
 
     def get_json(self):
         json = super().get_json()
@@ -675,7 +694,7 @@ class FaecesReportExtractor(MicrobiologyReportExtractor):
         vals = []
         text = self.get_section_from_text('Microscopy\s*:')
         for row in text.split('\n'):
-            match = re.search('(\w[\w ]+?) {2}(\w[\w+]*)',row)
+            match = re.search('(\w[\w ]+?) {2}(\w[\w+ ]*)',row)
             if match is not None:
                 m1 = match.group(1) # Name
                 m2 = match.group(2) # Value
@@ -694,7 +713,7 @@ class RespiratoryReportExtract(MicrobiologyReportExtractor):
 class BodyFluidReportExtractor(MicrobiologyReportExtractor):
     def __init__(self, text):
         super().__init__(text)
-        super().addSectionHead('Crystals')
+        super().addSectionHeadColon('Crystals')
 
     def get_json(self):
         json = super().get_json()
@@ -706,7 +725,7 @@ class DifficileScreeningReportExtractor(MicrobiologyReportExtractor):
 
     def __init__(self, text):
         super().__init__(text)
-        super().addSectionHead('C difficile Screen')
+        super().addSectionHeadColon('C difficile Screen')
 
     def get_culture(self):
         pass
@@ -735,14 +754,61 @@ class BacterialAntigensReportExtractor(MicrobiologyReportExtractor):
         """Get first \n, get before \n and this will be the specimen. Everything after is some weird custome field"""
         parser = TextParser()
 
+        json = super().get_json()
         idx = json['specimen'].index('\n')
         specimen = json['specimen'][0:idx]
         extraContent = json['specimen'][idx:]
+        json['specimen'] = specimen
+        json['extra_specimen'] = parser.getKeyValueNoNotes(extraContent)
 
-        # parser.getKeyValuePair()
+        return json
 
+class MycologyReportExtractor(MicrobiologyReportExtractor):
+    pass
 
+class MycobacteriologyReportExtractor(MicrobiologyReportExtractor):
 
+    def __init__(self, text):
+        super().__init__(text)
+        super().addSectionHead('ACID - FAST MICROSCOPY - \[Standard Ziehl-Neelsen\]\nResult\s*:')
+        super().addSectionHead('MYCOBACTERIAL CULTURE\nResult\s*:')
+
+    def get_speciment(self):
+        pass
+
+    def get_json(self):
+        """Get first \n, get before \n and this will be the specimen. Everything after is some weird custome field"""
+        val = 'ACID - FAST MICROSCOPY - {0}\nResult\s*:'.format(re.escape('[Standard Ziehl-Neelsen]'))
+
+        parser = TextParser()
+
+        json = super().get_json()
+
+        fast_microscopy = 'ACID - FAST MICROSCOPY - \[Standard Ziehl-Neelsen\]\nResult\s*:'
+        mycobaterial_culture = 'MYCOBACTERIAL CULTURE\nResult\s*:'
+
+        json['fast_microscopy'] = self.get_section_from_text(fast_microscopy)
+        json['mycobaterial_culture'] = self.get_section_from_text(mycobaterial_culture)
+        json['specimen'] = parser.getKeyValuePair(json['specimen'])
+        json['microscopy'] = '' # No microscopy for this report. It will match the field name however.
+
+        return json
+
+class GenitalReportExtractor(MicrobiologyReportExtractor):
+
+    # Clue Cells
+    def __init__(self, text):
+        super().__init__(text)
+        super().addSectionHeadColon('Clue Cells')
+
+    def get_json(self):
+        json = super().get_json()
+        json['clue_cells'] = self.get_section_from_text('clue_cells')
+
+        return json
+
+class OperativeInvasiveReportExtractor(MicrobiologyReportExtractor):
+    pass
 
 class UnknownReportExtractor(MicrobiologyReportExtractor):
     def get_json(self):
@@ -787,18 +853,30 @@ def report_extractor_factory(section):
         return EENTReportExtractor(section)
     if report[0] == 'Bacterial Antigens':
         return BacterialAntigensReportExtractor(section)
+    if report[0] == 'MYCOLOGY':
+        return MycologyReportExtractor(section)
+    if report[0] == 'MYCOBACTERIOLOGY':
+        return MycobacteriologyReportExtractor(section)
+    if report[0] == 'GENITAL MICROBIOLOGY':
+        return GenitalReportExtractor(section)
+    if report[0] == 'MICROBIOLOGY FROM OPERATIVE/INVASIVE SPECIMENS':
+        return OperativeInvasiveReportExtractor(section)
     else:
         raise Exception("Unrecognized report {}.".format(report[0]))
 
 
 # Split each report into a list item containing the json elements identifying the structured data.
 def extract_value_section_as_json(section):
+    extractor = None
     try:
         extractor = report_extractor_factory(section)
         val = extractor.get_json()
         return val
 
     except Exception as err:
+        if 'Unrecognized report' not in err.__str__():
+            print(section)
+            raise Exception(err)
         result = {
             'error': "Exception",
             'exception': err.args[0],

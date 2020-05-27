@@ -16,10 +16,11 @@ class ReportInfo():
     def generateSingleReport(self,dataframeColumn,index):
         val = dataframeColumn[index]
         jsonval = extract_value_report_as_json(val)
+        genReports = []
         for jsonreport in jsonval:
             if 'error' not in jsonreport:
-                return Report(jsonreport, index)
-        return None
+                genReports.append(Report(jsonreport, index,val))
+        return genReports
 
     def generateReportsFromCsvRow(self,row: str) -> Report:
         jsonval = extract_value_report_as_json(row)
@@ -54,7 +55,7 @@ class ReportInfo():
                 jsonval = extract_value_report_as_json(rep)
                 for jsonreport in jsonval:
                     #if 'error' in jsonreport:
-                    #    raise Exception(jsonval['exception'])
+                    #    raise Exception(jsonreport['exception'])
                     if 'error' not in jsonreport and reportType in jsonreport['report'][0]:
                         try:
                             reports.append(Report(jsonreport,idx,rep))
@@ -128,7 +129,7 @@ class ReportInfo():
             del output[leng] # Remove the trailing empty array section
             return pandas.DataFrame(output,columns=ReportTypes().reportStruct)
 
-    def getReportsForTesting(self,reportList):
+    def getReportsForTesting(self,reportList) -> list:
         """This will get the min, max and report with the most fields and return them as a list"""
         min = 100000
         max = 0
@@ -157,13 +158,19 @@ class ReportInfo():
         reportnames = []
         for row in csvRows:
             splits = row.split('\n')
-            if 'Lab No' in splits[1]:
-                match = re.search('(\w[\w ]+?) {2}',splits[3]).group(1).strip()
-                if match not in reportnames:
-                    reportnames.append(match)
-            else:
-                if splits[1] not in reportnames:
-                    reportnames.append(splits[1])
+            try:
+                if 'Lab No' in splits[1]:
+                    match = re.search('(\w[\w ]+?) {2}',splits[3]).group(1).strip()
+                    if match not in reportnames:
+                        reportnames.append(match)
+                else:
+                    if splits[1] not in reportnames:
+                        reportnames.append(splits[1])
+
+            except :
+                print(splits)
+                pass
+                #raise Exception('fails')
 
         return reportnames
 
