@@ -143,7 +143,7 @@ class TestExtractBasics(unittest.TestCase):
 
     def testCultureParser(self):
         s_basic = 'Culture    :\n                                                 PEN FLU CFZ VA\n         Staphylococcus epidermidis               R   S   S   S'
-        r_basic = '{"cultures": [{"name": "Staphylococcus epidermidis", "resistances": {"PEN": "R", "FLU": "S", "CFZ": "S", "VA": "S"}}], "notes": []}'
+        r_basic = '{"cultures": [{"name": "Staphylococcus epidermidis", "resistances": {"PEN": "R", "FLU": "S", "CFZ": "S", "VA ": "S"}}], "notes": []}'
         s_gt_character = 'Culture    :\n                                                 SXT GEN TIM CIP\n    Acinetobacter baumannii complex >= 15 cfu     S   S   S   S\n\n                                                 MER\n    Acinetobacter baumannii complex >= 15 cfu     S\n\n'
         r_gt_character = '{"cultures": [{"name": "Acinetobacter baumannii complex", "resistances": {"SXT": "S", "GEN": "S", "TIM": "S", "CIP": "S", "MER": "S"}}], "notes": []}'
         s_inlineheader = 'CULTURE:                                                   AMP CFZ TMP NIT\n                             Escherichia coli > 10^8/L      S   S   S   S\n\n                                                           GEN\n                             Escherichia coli > 10^8/L      S\n\n\n'

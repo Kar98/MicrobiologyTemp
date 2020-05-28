@@ -104,24 +104,37 @@ mycologyName = 'MYCOLOGY'
 mbactName = 'MYCOBACTERIOLOGY'
 genName = 'GENITAL MICROBIOLOGY'
 opName = 'MICROBIOLOGY FROM OPERATIVE/INVASIVE SPECIMENS'
-reportname = opName
+reportname = urineName
 
 #Load data
 #reportList = df['ValueNew']
-reportList = df['ValueNew'].head(10000)
+reportList = df['ValueNew'].head(1000)
+
 ri = ReportInfo()
+
+tmp = ri.generateSingleReport(reportList,575)
+
 us = ri.getUniqueReportTypes(reportList)
-print(us)
+#print(us)
 
 
 parser = CultureParser()
 culture = parser.parseCulture(readFile('test.txt'))
-print(culture)
+#print(json.dumps(culture))
+
+
 
 # main()
-#reports = ri.generateLimitedReportList(reportList,reportname)
-#print('total {0}'.format(len(reports)))
-#print(json.dumps(reports[0].jsonObj))
+reports = ri.generateLimitedReportList(reportList,reportname)
+print('total {0}'.format(len(reports)))
+print(json.dumps(reports[0].jsonObj))
+
+currentRep = 0
+
+for r in reports:
+    if r.csvIndex == 575:
+        print(json.dumps(r.jsonObj))
+        writeFile('rep{0}.txt'.format(r.csvIndex),r.rawdata)
 
 #test
 #test(reports)

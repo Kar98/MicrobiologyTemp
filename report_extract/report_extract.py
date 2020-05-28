@@ -221,7 +221,10 @@ class CultureParser:
         else:
             return False
 
-    def getHeaderRowValue(self, rowtext):
+    def isIndentList(self,row):
+        pass
+
+    def getHeaderRowValue(self, rowtext: str) -> list:
         # Potentially use a custom parser to find if it's a header row.
         pattern = ' [A-Z]{2,3}'
         matches = re.findall(pattern, rowtext)
@@ -233,26 +236,28 @@ class CultureParser:
                 output.append(m)
             else:
                 output.append(m.strip())
-        return ' '.join(output)
+        return output
 
-    def getResistanceValues(self, startHeaderPos, rowtext, headertext):
-        # Row text has the culture and values on it
-        # startHeaderPos is the index of the start position, of the header from previous row
-        # Header text is only the valid header text (no whitespace)
-        resistances = headertext.split(' ')
+
+    def getResistanceValues(self, rowtext: str, headertext: str, listofresistances: list):
+        """ Row text is the raw value for the row
+        headertext is the raw header text found above the culture
+        listofresistances is a list of abbreviations/resistances currently stored """
         cultureResistance = {}
-        for res in resistances:
-            resIdx = headertext.index(res) + startHeaderPos
-            maxIdx = resIdx + len(res)
-            resValue = []
-            # Get the value underneath the header text
-            try:
-                for x in range(resIdx,maxIdx):
-                    resValue.append(rowtext[x])
-                cultureResistance[res] = ''.join(resValue).strip()
-            except IndexError:
-                # if the index is > length of string, no whitespace and load whatever is found
-                cultureResistance[res] = ''.join(resValue).strip()
+        for res in listofresistances:
+            baseRes = res.strip()
+            if baseRes in headertext:
+                resIdx = headertext.index(baseRes)
+                maxIdx = resIdx + len(res)
+                resValue = []
+                # Get the value underneath the header text
+                try:
+                    for x in range(resIdx,maxIdx):
+                        resValue.append(rowtext[x])
+                    cultureResistance[res] = ''.join(resValue).strip()
+                except IndexError:
+                    # if the index is > length of string, no whitespace and load whatever is found
+                    cultureResistance[res] = ''.join(resValue).strip()
 
         return cultureResistance
 
@@ -269,6 +274,16 @@ class CultureParser:
                 return True
 
         return False
+
+    def isIndentRow(self,row: str,textFound: str) -> bool:
+        """This is to check if the row found, is to be considered an 'indented' row. If the textFound text is at the end
+        of the string, then we can assume it's an indented line and not a new culture with 0 resistances set."""
+        rgx = re.compile(re.escape(textFound)+'$')
+        if rgx.search(row) is None:
+            return False
+        else:
+            return True
+
 
     def getAbbrevInRow(self,row,listofabbreviations):
         abbres = []
@@ -322,8 +337,10 @@ class CultureParser:
 
     def parseCulture(self, cultureTextBlock):
         # Split rows
-        # Scan for text in the row. If it's a header, do culture handling. If it's not add to notes
-        # Mark the start position of the culture. If the culture below is indented (+4), then it is not a culture.
+        # Scan for text in the row. If it's a header, set a marker for the next row to be processed as a culture.
+        # If a blank line is found then the marker will be reset.
+        # If the row found is expected to be a culture, but it's indented, a special indent check will be made. Currentl
+        # it's not known what these are supposed to be so they are tracked as a special object.
 
         expectCulture = False
         notes = []
@@ -331,7 +348,6 @@ class CultureParser:
         cultures = {'cultures': [], 'notes': []}
         listofcultures = cultures['cultures']
         currentHeaderText = ''
-        parentStartPos = 1000  # High number to trigger first iteration
         parentCulture = Culture('') #POtentially convert this to a dict rather than Culture obj
         abbreviationList = []
 
@@ -345,22 +361,19 @@ class CultureParser:
             elif self.isHeaderRow(row):
                 expectCulture = True
                 header = self.getHeaderRowValue(row)
-                headerIndex = row.index(header)
-                currentHeaderText = header
-                abbreviationList.extend(header.split(' '))
+                currentHeaderText = row
+                abbreviationList.extend(header)
             elif len(row.strip()) == 0:
                 # Newline/empty line hit, reset.
                 expectCulture = False
-                parentStartPos = 1000
             elif expectCulture:
-                # Culture is expected on this line, load into obj.
-                if parentStartPos < row.index(text):
+                # Culture is expected on this line
+                if self.isIndentRow(row,text):
                     # Then it's an indent
                     self.getCultureFromList(listofcultures,parentCulture.name).indentItem = text
                 else:
                     # Get the resistances and add them to the cultures variable
-                    values = self.getResistanceValues(headerIndex, row, currentHeaderText)
-                    parentStartPos = row.index(text)
+                    values = self.getResistanceValues(row, currentHeaderText, abbreviationList)
                     try:
                         culture = self.getCultureFromList(listofcultures,text)
                         culture.resistances.update(values)

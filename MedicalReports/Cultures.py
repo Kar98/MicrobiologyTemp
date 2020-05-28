@@ -40,6 +40,17 @@ class CultureBlock():
         else:
             return False
 
+    def hasIndent(self):
+        for culture in self.cultures:
+            try:
+                val = culture['indentItem']
+            except KeyError:
+                return False
+            if len(val) > 0:
+                return True
+
+        return False
+
     def hasNotes(self):
         if len(self.notes) > 0:
             return True
