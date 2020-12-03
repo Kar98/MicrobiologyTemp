@@ -368,9 +368,12 @@ class CultureParser:
                 expectCulture = False
             elif expectCulture:
                 # Culture is expected on this line
-                if self.isIndentRow(row,text):
-                    # Then it's an indent
-                    self.getCultureFromList(listofcultures,parentCulture.name).indentItem = text
+                if self.isIndentRow(row,text) and parentCulture.name != '':
+                    # If the row is indented and it's not the first row, then treat it as a indentItem
+                    try:
+                        self.getCultureFromList(listofcultures,parentCulture.name).indentItem = text
+                    except:
+                        print('error found with : '+cultureTextBlock)
                 else:
                     # Get the resistances and add them to the cultures variable
                     values = self.getResistanceValues(row, currentHeaderText, abbreviationList)
@@ -786,7 +789,7 @@ class MycobacteriologyReportExtractor(MicrobiologyReportExtractor):
         super().addSectionHead('ACID - FAST MICROSCOPY - \[Standard Ziehl-Neelsen\]\nResult\s*:')
         super().addSectionHead('MYCOBACTERIAL CULTURE\nResult\s*:')
 
-    def get_speciment(self):
+    def get_specimen(self):
         pass
 
     def get_json(self):

@@ -149,7 +149,7 @@ class TestExtractBasics(unittest.TestCase):
         s_inlineheader = 'CULTURE:                                                   AMP CFZ TMP NIT\n                             Escherichia coli > 10^8/L      S   S   S   S\n\n                                                           GEN\n                             Escherichia coli > 10^8/L      S\n\n\n'
         r_inlineheader = '{"cultures": [{"name": "Escherichia coli", "resistances": {"AMP": "S", "CFZ": "S", "TMP": "S", "NIT": "S", "GEN": "S"}}], "notes": []}'
         s_indent_multiline_multires = 'Culture    :\n                                                       PEN FLU AMP AUG\n                   Staphylococcus aureus 3+             R   S\n                   Klebsiella pneumoniae 1+                     R   S\n                        Candida albicans scant\n\n                                                       CFZ ERY SXT GEN\n                   Staphylococcus aureus 3+             S   S   S\n                   Klebsiella pneumoniae 1+             S       S   S\n                        Candida albicans scant\n\n                                                       TET\n                   Staphylococcus aureus 3+             S\n                   Klebsiella pneumoniae 1+\n                        Candida albicans scant\n\n\n'
-        r_indent_multiline_multires = '{"cultures": [{"name": "Staphylococcus aureus 3+", "resistances": {"PEN": "R", "FLU": "S", "AMP": "", "AUG": "", "CFZ": "S", "ERY": "S", "SXT": "S", "GEN": "", "TET": "S"}}, {"name": "Klebsiella pneumoniae 1+", "resistances": {"PEN": "", "FLU": "", "AMP": "R", "AUG": "S", "CFZ": "S", "ERY": "", "SXT": "S", "GEN": "S", "TET": ""}, "indentItem": "Candida albicans scant"}], "notes": []}'
+        r_indent_multiline_multires = '{"cultures": [{"name": "Staphylococcus aureus 3+", "resistances": {"PEN": "R", "FLU": "S", "AMP": "", "AUG": "", "CFZ": "S", "ERY": "S", "SXT": "S", "GEN": "", "TET": "S"}, "indentItem": "Candida albicans scant"}, {"name": "Klebsiella pneumoniae 1+", "resistances": {"PEN": "", "FLU": "", "AMP": "R", "AUG": "S", "CFZ": "S", "ERY": "", "SXT": "S", "GEN": "S"}, "indentItem": "Candida albicans scant"}], "notes": []}'
         s_inline_notes = 'Culture      :      No growth after 5 days incubation'
         r_inline_notes = '{"cultures": [], "notes": ["No growth after 5 days incubation"]}'
 
@@ -191,7 +191,8 @@ class TestExtractBasics(unittest.TestCase):
 class TestHighLevelScenarios(unittest.TestCase):
 
     def test_check_report_counts(self, fail=True):
-
+        """Takes an input list (df) then will convert all the reports into the parsed result. It will then output a count of all the different repor types found. If the number of
+        report is under 10, it's assumed that the parser chopped off a report."""
         sizeBasedDf = validator.convertToSizeBasedDf(df['ValueNew'])
         # Get the counts of the reports
         counts = sizeBasedDf.groupby(['Report'])['Report'].count()
@@ -208,19 +209,25 @@ class TestHighLevelScenarios(unittest.TestCase):
             return errors
 
     def test_check_assigned_fields(self):
-        reportname = 'BLOOD CULTURE MICROBIOLOGY'
+        """Outputs a percentage of reports that have a particular field assigned. Use this to find reports that are missing
+        mandatory fields or suspiciously low assignment of fields (eg, only 1% assigned). Note it spams error messages if run in IDE.
+        This is due to the way the json parser was initially built. Need to supress the errors to get usable output or
+        reduce the size of the report list (.head(1000)"""
+        reportname = 'BLOOD CULTURE MICROBIOLOGY' #Name of the report to filter on.
         totalStats = []
-        reportList = df['ValueNew']
+        reportList = df['ValueNew'].head(100)
+
         for val in reportList:
             if (reportname in val):
                 rep = extract_value_report_as_json(val)
                 try:
                     if (rep[0]['report'][0] in reportname):
-                        counts = validator.getJsonFieldCounts(rep[0])
+                        counts = validator.getJsonFieldCounts(rep[0]) #0 if not assigned, >1 assigned
                         # print(counts)
                         totalStats.append(counts)
                 except:
                     print('Cannot parse report')
+
         ret = validator.getPercentageOfAssignedKeys(totalStats)
 
         print(ret)

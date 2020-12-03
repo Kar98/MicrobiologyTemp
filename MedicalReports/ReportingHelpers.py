@@ -37,6 +37,8 @@ class ReportInfo():
         reports = []
         for rep in reportList:
             jsonval = extract_value_report_as_json(rep)
+            if len(jsonval) > 1:
+                pass
             for jsonreport in jsonval:
                 if 'error' not in jsonreport:
                     reports.append(Report(jsonreport,idx))
@@ -131,8 +133,8 @@ class ReportInfo():
 
     def getReportsForTesting(self,reportList) -> list:
         """This will get the min, max and report with the most fields and return them as a list"""
-        min = 100000
-        max = 0
+        min = 100000 # set initial min
+        max = 0 # set inital max
         colons = 0
 
         currentMin = None

@@ -165,25 +165,18 @@ class JsonValidator():
 						index = row['Index']
 		return [(index,groupname,minsize,"Notepad++ {0}".format(index+2))]
 
-	def getMultiReport(self,column):
-		index = 0
-		for col in column:
-			reports = re.findall(report_pattern,col)
-			if(len(reports) > 1):
-				return [index,reports]
-			else:
-				index +=1
-
-	def getPercentageForKey(self, keyName, listOfDicts):
+	def getPercentageForKey(self, keyname: str, listOfDicts: dict) -> float:
 		has = 0
 		for stat in listOfDicts:
-			if (stat[keyName] >= 1):
+			if (stat[keyname] >= 1):
 				has += 1
 
 		return has / len(listOfDicts) * 100
 
 	# For each key, find what the percentage is.
-	def getPercentageOfAssignedKeys(self, dictOfFieldValues):
+	def getPercentageOfAssignedKeys(self, dictOfFieldValues: dict) -> dict:
+		"""This will get the percentage of fields assigned. If there are 10 reports, 5 of them have LabNo assigned,
+		then return values will be LabNo: 50% """
 		try:
 			keys = dictOfFieldValues.keys()
 		except:
@@ -254,5 +247,5 @@ class JsonValidator():
 
 
 
-if __name__ == '__main__':
-	main()
+#if __name__ == '__main__':
+#	main()

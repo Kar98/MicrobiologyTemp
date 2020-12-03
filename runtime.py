@@ -104,37 +104,38 @@ mycologyName = 'MYCOLOGY'
 mbactName = 'MYCOBACTERIOLOGY'
 genName = 'GENITAL MICROBIOLOGY'
 opName = 'MICROBIOLOGY FROM OPERATIVE/INVASIVE SPECIMENS'
-reportname = urineName
+reportname = diffName
 
 #Load data
 #reportList = df['ValueNew']
-reportList = df['ValueNew'].head(1000)
+reportList = df['ValueNew'].head(10000)
 
 ri = ReportInfo()
 
-tmp = ri.generateSingleReport(reportList,575)
+#tmp = ri.generateSingleReport(reportList,750)
 
 us = ri.getUniqueReportTypes(reportList)
 #print(us)
 
 
-parser = CultureParser()
-culture = parser.parseCulture(readFile('test.txt'))
-#print(json.dumps(culture))
+# TODO:
+# - Create more report parsers for the rest of the reports
+# - Redesign the structure of the base report extracter (MicrobiologyReportExtractor). Currently it pulls alot of info that the other reports don't have. It would be best to have it pull all the common data, then get the reports that need the extra data to use the addSectionHeadColon/addSectionHead functions to control the extra fields. Part of this redesign should be to have every field that gets extracted to be able to get overloaded.
+# - Write some more unit tests for the different sections that get extracted (eg, gram stain, microscopy etc.)
+# - Add in the pytyping syntax to make it clear what each function does. Currently it's very difficult based on the naming conventions (str vs list vs dict vs dataframe)
+# - Ensure all fields are captured in a proper format, rather than a basic string. It causes some fields to be printed as ' texthere \n more text here '. New TextParser class can be used to help with this.(write unit test to check for this)
 
 
 
 # main()
 reports = ri.generateLimitedReportList(reportList,reportname)
+#reports = ri.generateReportList(reportList)
 print('total {0}'.format(len(reports)))
 print(json.dumps(reports[0].jsonObj))
 
-currentRep = 0
+#test(reports)
 
-for r in reports:
-    if r.csvIndex == 575:
-        print(json.dumps(r.jsonObj))
-        writeFile('rep{0}.txt'.format(r.csvIndex),r.rawdata)
+
 
 #test
 #test(reports)
